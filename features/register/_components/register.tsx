@@ -2,11 +2,9 @@ import React from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Separator } from "@/components/ui/separator"
-import { Apple } from "lucide-react"
 import { Card } from "@/components/ui/card"
-import Link from "next/link"
 
-function Login() {
+function Register() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-400 via-purple-500 to-pink-500">
 
@@ -20,14 +18,20 @@ function Login() {
 
         <div className="mb-6 text-center">
           <h1 className="text-2xl font-bold text-gray-800">
-            Welcome back
+            Create Account
           </h1>
           <p className="text-sm text-gray-500 mt-1">
-            Please enter your login credentials
+            Please fill in the information below
           </p>
         </div>
 
         <form className="space-y-4">
+
+          <Input 
+            type="text"
+            placeholder="Full Name"
+            className="h-11"
+          />
 
           <Input 
             type="email"
@@ -41,12 +45,14 @@ function Login() {
             className="h-11"
           />
 
-          <div className="text-right text-xs text-purple-600 cursor-pointer">
-            Forgot password?
-          </div>
+          <Input 
+            type="password"
+            placeholder="Confirm Password"
+            className="h-11"
+          />
 
           <Button className="w-full h-11 bg-purple-600 hover:bg-purple-700 text-white">
-            Login
+            Sign Up
           </Button>
 
           <div className="flex items-center gap-3 my-4">
@@ -64,24 +70,16 @@ function Login() {
               alt="Google"
               className="w-4 h-4"
             />
-            Sign in with Google
-          </Button>
-
-          <Button
-            variant="outline"
-            className="w-full h-11 flex items-center justify-center gap-2"
-          >
-            <Apple className="w-4 h-4" />
-            Sign in with Apple ID
+            Sign up with Google
           </Button>
 
         </form>
 
         <div className="text-center text-xs text-gray-500 mt-6">
-          Don’t have an account?{" "}
-          <Link href="register" className="text-purple-600 cursor-pointer">
-            Sign up
-          </Link>
+          Already have an account?{" "}
+          <span className="text-purple-600 cursor-pointer">
+            Login
+          </span>
         </div>
 
       </Card>
@@ -89,4 +87,4 @@ function Login() {
   )
 }
 
-export default Login
+export default Register
