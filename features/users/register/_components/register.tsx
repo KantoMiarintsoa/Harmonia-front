@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Separator } from "@/components/ui/separator"
 import { Card } from "@/components/ui/card"
+import Link from "next/link"
 
 function Register() {
   return (
@@ -77,9 +78,9 @@ function Register() {
 
         <div className="text-center text-xs text-gray-500 mt-6">
           Already have an account?{" "}
-          <span className="text-purple-600 cursor-pointer">
-            Login
-          </span>
+         <Link href="/" className="text-purple-600 cursor-pointer">
+            Sign in
+          </Link>
         </div>
 
       </Card>

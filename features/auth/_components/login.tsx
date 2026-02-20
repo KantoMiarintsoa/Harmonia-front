@@ -45,9 +45,9 @@ function Login() {
             Forgot password?
           </div>
 
-          <Button className="w-full h-11 bg-purple-600 hover:bg-purple-700 text-white">
+         <Link href="/unauthenticated/dashboard" className="w-full h-11 bg-purple-600 hover:bg-purple-700 text-white flex items-center justify-center rounded-md">
             Login
-          </Button>
+          </Link>
 
           <div className="flex items-center gap-3 my-4">
             <Separator className="flex-1" />
@@ -79,7 +79,7 @@ function Login() {
 
         <div className="text-center text-xs text-gray-500 mt-6">
           Don’t have an account?{" "}
-          <Link href="register" className="text-purple-600 cursor-pointer">
+          <Link href="/unauthenticated/register" className="text-purple-600 cursor-pointer">
             Sign up
           </Link>
         </div>

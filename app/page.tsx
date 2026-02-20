@@ -1,7 +1,8 @@
+import { Header } from '@/components/ui/header'
 import Login from '@/features/auth/_components/login'
 import React from 'react'
 
-function LoginPage() {
+function HomePage() {
   return (
     <div>
       <Login/>
@@ -9,4 +10,15 @@ function LoginPage() {
   )
 }
 
-export default LoginPage
+export default HomePage
+
+
+// export default async function Home() {
+//   const user = await getCurrentUser()
+
+//   if (user) {
+//     redirect("/dashboard")
+//   } else {
+//     redirect("/login")
+//   }
+// }
