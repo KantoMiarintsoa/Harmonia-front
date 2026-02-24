@@ -1,5 +1,5 @@
 import { Header } from "@/components/ui/header"
-import { Sidebar } from "@/components/ui/sidebar"
+import { Sidebar, SidebarProvider } from "@/components/ui/sidebar"
 
 export default function ProtectedLayout({
   children,
@@ -7,15 +7,16 @@ export default function ProtectedLayout({
   children: React.ReactNode
 }) {
   return (
-    <div className="flex min-h-screen">
-      {/* Sidebar */}
+    <SidebarProvider>
+      <div className="flex min-h-screen">
       <Sidebar />
 
-      {/* Content */}
-      <div className="flex flex-1 flex-col">
+      <div className="w-full">
         <Header />
         <main className="flex-1 p-6">{children}</main>
       </div>
     </div>
+    </SidebarProvider>
+    
   )
 }

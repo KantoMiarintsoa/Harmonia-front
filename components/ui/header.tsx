@@ -10,7 +10,7 @@ import { Bell, Globe } from "lucide-react"
 
 export function Header() {
   return (
-    <header className="flex h-14 items-center justify-between border-b px-6 bg-background">
+    <div className="flex items-center justify-between px-4 py-3">
       <h1 className="text-lg font-semibold">Dashboard</h1>
 
       <div className="flex items-center gap-3">
@@ -24,7 +24,6 @@ export function Header() {
               <Globe className="h-5 w-5" />
             </Button>
           </DropdownMenuTrigger>
-
           <DropdownMenuContent align="end">
             <DropdownMenuItem>English</DropdownMenuItem>
             <DropdownMenuItem>Français</DropdownMenuItem>
@@ -32,14 +31,12 @@ export function Header() {
           </DropdownMenuContent>
         </DropdownMenu>
 
-        {/* User menu */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Avatar>
               <AvatarFallback>K</AvatarFallback>
             </Avatar>
           </DropdownMenuTrigger>
-
           <DropdownMenuContent align="end">
             <DropdownMenuItem>Profile</DropdownMenuItem>
             <DropdownMenuItem>Settings</DropdownMenuItem>
@@ -47,6 +44,6 @@ export function Header() {
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
-    </header>
+    </div>
   )
 }
