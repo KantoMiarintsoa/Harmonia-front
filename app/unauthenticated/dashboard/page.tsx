@@ -1,12 +1,12 @@
-import Dashboard from '@/features/users/dashboard/dashboard'
-import React from 'react'
+// import Dashboard from '@/features/users/dashboard/dashboard'
+// import React from 'react'
 
-function DashboardPage() {
-  return (
-    <div>
-        <Dashboard/>
-    </div>
-  )
-}
+// function DashboardPage() {
+//   return (
+//     <div>
+//         <Dashboard/>
+//     </div>
+//   )
+// }
 
-export default DashboardPage
+// export default DashboardPage

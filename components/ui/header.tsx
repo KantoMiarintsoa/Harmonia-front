@@ -10,7 +10,7 @@ import { Bell, Globe } from "lucide-react"
 
 export function Header() {
   return (
-    <div className="flex items-center justify-between px-4 py-3">
+    <div className="flex h-14 items-center justify-between px-4">
       <h1 className="text-lg font-semibold">Dashboard</h1>
 
       <div className="flex items-center gap-3">
