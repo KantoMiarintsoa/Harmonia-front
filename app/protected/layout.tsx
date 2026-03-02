@@ -1,4 +1,4 @@
-import { Header } from "@/components/ui/header"
+import { Header } from "@/components/layout/header"
 import { Sidebar, SidebarProvider } from "@/components/ui/sidebar"
 
 export default function ProtectedLayout({
@@ -10,15 +10,14 @@ export default function ProtectedLayout({
     <SidebarProvider>
       <div className="flex min-h-screen w-full">
         
-        {/* couleur appliquée directement */}
-        <Sidebar className="bg-red-400 text-white" />
+        <Sidebar />
 
         <div className="flex flex-1 flex-col">
           <div className="sticky top-0 z-20 border-b bg-black">
             <Header />
           </div>
 
-          <main className="flex-1 p-6">
+          <main className="flex-1 bg-blue-300 p-6 overflow-auto">
             {children}
           </main>
         </div>

@@ -1,4 +1,4 @@
-import { Header } from '@/components/ui/header'
+import { Header } from '@/components/layout/header'
 import Login from '@/features/auth/_components/login'
 import React from 'react'
 
