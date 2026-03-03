@@ -1,8 +1,51 @@
+import {
+  LayoutDashboard,
+  CheckSquare,
+  Wallet,
+  Heart,
+  Bell,
+  Settings,
+} from "lucide-react"
+
 export const navigation = [
-  { label: "Dashboard", href: "/dashboard" },
-  { label: "Tasks", href: "/tasks" },
-  { label: "Finance", href: "/finance" },
-  { label: "Health", href: "/health" },
-  { label: "Notifications", href: "/notifications" },
-  { label: "Settings", href: "/settings" },
+  {
+    section: "MAIN",
+    items: [
+      {
+        label: "Dashboard",
+        href: "/dashboard",
+        icon: LayoutDashboard,
+      },
+      {
+        label: "Tasks",
+        href: "/tasks",
+        icon: CheckSquare,
+      },
+      {
+        label: "Finance",
+        href: "/finance",
+        icon: Wallet,
+      },
+      {
+        label: "Health",
+        href: "/health",
+        icon: Heart,
+      },
+      {
+        label: "Notifications",
+        href: "/notifications",
+        icon: Bell,
+      },
+    ],
+  },
+  {
+    section: "SYSTEM",
+    items: [
+      {
+        label: "Settings",
+        href: "/settings",
+        icon: Settings,
+      },
+    ],
+  },
 ]

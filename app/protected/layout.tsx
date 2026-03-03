@@ -1,5 +1,6 @@
+import { SidebarProvider } from "@/components/ui/sidebar"
+import AppSidebar from "@/components/layout/app-sidebar"
 import { Header } from "@/components/layout/header"
-import { Sidebar, SidebarProvider } from "@/components/ui/sidebar"
 
 export default function ProtectedLayout({
   children,
@@ -9,15 +10,13 @@ export default function ProtectedLayout({
   return (
     <SidebarProvider>
       <div className="flex min-h-screen w-full">
-        
-        <Sidebar />
+
+        <AppSidebar />
 
         <div className="flex flex-1 flex-col">
-          <div className="sticky top-0 z-20 border-b bg-black">
-            <Header />
-          </div>
+          <Header />
 
-          <main className="flex-1 bg-blue-300 p-6 overflow-auto">
+          <main className="flex-1 p-6">
             {children}
           </main>
         </div>
