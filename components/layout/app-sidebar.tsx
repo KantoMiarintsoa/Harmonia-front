@@ -3,152 +3,109 @@
 import { useState } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { PanelLeft } from "lucide-react"
-
-import {
-  Sidebar,
-  SidebarContent,
-  SidebarGroup,
-  SidebarGroupLabel,
-  SidebarMenu,
-  SidebarMenuItem,
-  SidebarMenuButton,
-  SidebarFooter,
-  SidebarHeader,
-} from "@/components/ui/sidebar"
+import { ChevronLeft, ChevronRight } from "lucide-react"
 
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
-import { Skeleton } from "@/components/ui/skeleton"
 import { navigation } from "@/lib/navigation"
 
 export default function AppSidebar() {
   const pathname = usePathname()
   const [collapsed, setCollapsed] = useState(false)
-  const [loading, setLoading] = useState(false)
-
-  const toggleSidebar = () => {
-    setCollapsed((prev) => !prev)
-  }
 
   return (
-    <div className="relative flex">
+    <aside
+      className={`
+        relative flex flex-col
+        bg-white border-r border-gray-100
+        transition-all duration-300 ease-[cubic-bezier(.4,0,.2,1)]
+        ${collapsed ? "w-16" : "w-60"}
+        min-h-screen
+      `}
+    >
+      {/* Header */}
+      <div className={`flex items-center h-14 border-b border-gray-100 ${collapsed ? "justify-center px-2" : "px-4 gap-2"}`}>
+        <div className="h-7 w-7 rounded-lg bg-violet-600 flex items-center justify-center shrink-0">
+          <span className="text-white text-xs font-bold">H</span>
+        </div>
+        {!collapsed && (
+          <span className="text-sm font-semibold text-gray-800">Harmonia</span>
+        )}
+      </div>
 
-      <Sidebar
-        className={`
-          bg-white
-          border-r
-          transition-all
-          duration-300
-          ease-[cubic-bezier(.4,0,.2,1)]
-          ${collapsed ? "w-16" : "w-64"}
-        `}
-      >
-        <SidebarHeader className="flex items-center px-3 py-2 border-b">
+      {/* Navigation */}
+      <nav className="flex-1 px-2 py-3 space-y-5 overflow-y-auto">
+        {navigation.map((section) => (
+          <div key={section.section}>
+            {!collapsed && (
+              <p className="px-3 mb-1 text-[10px] font-semibold uppercase tracking-wider text-gray-400">
+                {section.section}
+              </p>
+            )}
+
+            <ul className="space-y-0.5">
+              {section.items.map((item) => {
+                const Icon = item.icon
+                const isActive = pathname === item.href
+
+                return (
+                  <li key={item.href}>
+                    <Link
+                      href={item.href}
+                      className={`
+                        flex items-center gap-3 rounded-lg px-3 h-9
+                        text-sm font-medium transition-colors
+                        ${collapsed ? "justify-center px-0 w-full" : ""}
+                        ${isActive
+                          ? "bg-violet-600 text-white"
+                          : "text-gray-600 hover:bg-violet-50 hover:text-violet-700"
+                        }
+                      `}
+                    >
+                      <Icon className="h-4 w-4 shrink-0" />
+                      {!collapsed && <span>{item.label}</span>}
+                    </Link>
+                  </li>
+                )
+              })}
+            </ul>
+          </div>
+        ))}
+      </nav>
+
+      {/* Footer */}
+      <div className={`border-t border-gray-100 p-3 ${collapsed ? "flex justify-center" : ""}`}>
+        <div className={`flex items-center gap-2 ${collapsed ? "" : ""}`}>
+          <Avatar className="h-7 w-7 shrink-0">
+            <AvatarFallback className="bg-violet-100 text-violet-700 text-xs font-semibold">RH</AvatarFallback>
+          </Avatar>
           {!collapsed && (
-            <span className="text-sm font-semibold">Harmonia</span>
-          )}
-        </SidebarHeader>
-
-        <SidebarContent className="p-2">
-          {navigation.map((section) => (
-            <SidebarGroup key={section.section}>
-              {!collapsed && (
-                <SidebarGroupLabel className="px-2 text-[10px] uppercase text-muted-foreground">
-                  {section.section}
-                </SidebarGroupLabel>
-              )}
-
-              <SidebarMenu>
-                {section.items.map((item) => {
-                  const Icon = item.icon
-                  const isActive = pathname === item.href
-
-                  return (
-                    <SidebarMenuItem key={item.href}>
-                      <SidebarMenuButton
-                        asChild
-                        isActive={isActive}
-                        className="h-9 rounded-lg px-2"
-                        onClick={() => setLoading(true)}
-                      >
-                        <Link
-                          href={item.href}
-                          className={`flex items-center gap-2 ${
-                            collapsed ? "justify-center" : ""
-                          }`}
-                        >
-                          <Icon className="h-4 w-4 shrink-0" />
-
-                          {!collapsed && (
-                            <span className="truncate">
-                              {item.label}
-                            </span>
-                          )}
-                        </Link>
-                      </SidebarMenuButton>
-                    </SidebarMenuItem>
-                  )
-                })}
-              </SidebarMenu>
-            </SidebarGroup>
-          ))}
-
-          {loading && (
-            <div className="space-y-2 mt-4">
-              <Skeleton className="h-8 w-full rounded-md" />
-              <Skeleton className="h-8 w-full rounded-md" />
-              <Skeleton className="h-8 w-full rounded-md" />
+            <div className="flex flex-col min-w-0">
+              <span className="text-sm font-medium text-gray-800 truncate">Example</span>
+              <span className="text-xs text-gray-400 truncate">example@gmail.com</span>
             </div>
           )}
-        </SidebarContent>
+        </div>
+      </div>
 
-        <SidebarFooter className="border-t p-2">
-          <div
-            className={`flex items-center gap-2 ${
-              collapsed ? "justify-center" : ""
-            }`}
-          >
-            <Avatar className="h-7 w-7">
-              <AvatarFallback>RH</AvatarFallback>
-            </Avatar>
-
-            {!collapsed && (
-              <div className="flex flex-col text-sm">
-                <span className="font-medium">Example</span>
-                <span className="text-xs text-muted-foreground">
-                  example@gmail.com
-                </span>
-              </div>
-            )}
-          </div>
-        </SidebarFooter>
-      </Sidebar>
-
+      {/* Collapse toggle */}
       <button
-        onClick={toggleSidebar}
+        onClick={() => setCollapsed((prev) => !prev)}
         className="
-          absolute
-          top-4
-          left-full
-           ml-3
-          h-8 w-8
+          absolute -right-3 top-[58px]
+          h-6 w-6
           flex items-center justify-center
           rounded-full
-          border
-          bg-white
+          bg-white border border-gray-200
           shadow-sm
-          hover:bg-muted
-          transition-all
-          duration300
+          hover:bg-gray-50
+          transition-colors z-10
         "
       >
-        <PanelLeft
-          className={`h-4 w-4 transition-transform duration-300 ${
-            collapsed ? "rotate-180" : ""
-          }`}
-        />
+        {collapsed
+          ? <ChevronRight className="h-3 w-3 text-gray-500" />
+          : <ChevronLeft className="h-3 w-3 text-gray-500" />
+        }
       </button>
-
-    </div>
+    </aside>
   )
 }
