@@ -21,21 +21,21 @@ export function TaskCard({ task, onEdit, onDelete, onToggle }: TaskCardProps) {
   return (
     <div
       className={`
-        bg-white rounded-xl border p-4 shadow-sm
+        bg-white dark:bg-gray-800 rounded-xl border p-4 shadow-sm
         transition-all hover:shadow-md
         ${isDone ? "opacity-70" : ""}
-        ${isOverdue ? "border-red-200" : "border-gray-100"}
+        ${isOverdue ? "border-red-200 dark:border-red-900" : "border-gray-100 dark:border-gray-700"}
       `}
     >
       <div className="flex items-start gap-3">
-        {/* Toggle button */}
+        {/* Toggle */}
         <button
           onClick={() => onToggle(task.id)}
           className={`
             mt-0.5 h-5 w-5 rounded-full border-2 shrink-0 flex items-center justify-center transition-all
             ${isDone
               ? "bg-emerald-500 border-emerald-500"
-              : "border-gray-300 hover:border-purple-400"
+              : "border-gray-300 dark:border-gray-600 hover:border-purple-400"
             }
           `}
         >
@@ -44,44 +44,27 @@ export function TaskCard({ task, onEdit, onDelete, onToggle }: TaskCardProps) {
 
         {/* Content */}
         <div className="flex-1 min-w-0">
-          <h3
-            className={`text-sm font-medium text-gray-800 truncate ${isDone ? "line-through text-gray-400" : ""}`}
-          >
+          <h3 className={`text-sm font-medium truncate ${isDone ? "line-through text-gray-400" : "text-gray-800 dark:text-gray-100"}`}>
             {task.title}
           </h3>
 
           {task.description && (
-            <p className="text-xs text-gray-500 mt-0.5 line-clamp-2">{task.description}</p>
+            <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5 line-clamp-2">{task.description}</p>
           )}
 
-          {/* Badges */}
           <div className="flex flex-wrap items-center gap-1.5 mt-2">
-            {/* Category */}
-            <span
-              className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium ${catCfg.bg} ${catCfg.color}`}
-            >
+            <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium ${catCfg.bg} ${catCfg.color}`}>
               {catCfg.label}
             </span>
-
-            {/* Status */}
-            <span
-              className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium ${statusCfg.bg} ${statusCfg.color}`}
-            >
+            <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium ${statusCfg.bg} ${statusCfg.color}`}>
               {statusCfg.label}
             </span>
-
-            {/* Due date */}
             {task.dueDate && (
-              <span
-                className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium ${
-                  isOverdue ? "bg-red-50 text-red-600" : "bg-gray-50 text-gray-500"
-                }`}
-              >
+              <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium ${
+                isOverdue ? "bg-red-50 text-red-600 dark:bg-red-950 dark:text-red-400" : "bg-gray-50 dark:bg-gray-700 text-gray-500 dark:text-gray-400"
+              }`}>
                 <Clock className="h-2.5 w-2.5" />
-                {new Date(task.dueDate + "T00:00:00").toLocaleDateString("fr-FR", {
-                  day: "numeric",
-                  month: "short",
-                })}
+                {new Date(task.dueDate + "T00:00:00").toLocaleDateString("fr-FR", { day: "numeric", month: "short" })}
               </span>
             )}
           </div>
@@ -91,13 +74,13 @@ export function TaskCard({ task, onEdit, onDelete, onToggle }: TaskCardProps) {
         <div className="flex items-center gap-1 shrink-0 ml-1">
           <button
             onClick={() => onEdit(task)}
-            className="h-7 w-7 flex items-center justify-center rounded-lg text-gray-400 hover:text-purple-600 hover:bg-purple-50 transition-colors"
+            className="h-7 w-7 flex items-center justify-center rounded-lg text-gray-400 hover:text-purple-600 hover:bg-purple-50 dark:hover:bg-purple-950 transition-colors"
           >
             <Pencil className="h-3.5 w-3.5" />
           </button>
           <button
             onClick={() => onDelete(task.id)}
-            className="h-7 w-7 flex items-center justify-center rounded-lg text-gray-400 hover:text-red-600 hover:bg-red-50 transition-colors"
+            className="h-7 w-7 flex items-center justify-center rounded-lg text-gray-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950 transition-colors"
           >
             <Trash2 className="h-3.5 w-3.5" />
           </button>
