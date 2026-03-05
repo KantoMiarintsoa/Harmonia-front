@@ -13,12 +13,12 @@ export const navigation = [
     items: [
       {
         label: "Dashboard",
-        href: "/dashboard",
+        href: "/protected/dashboard",
         icon: LayoutDashboard,
       },
       {
         label: "Tasks",
-        href: "/tasks",
+        href: "/protected/tasks",
         icon: CheckSquare,
       },
       {
