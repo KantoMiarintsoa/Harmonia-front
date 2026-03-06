@@ -28,7 +28,7 @@ export const navigation = [
       },
       {
         label: "Health",
-        href: "/health",
+        href: "/protected/health",
         icon: Heart,
       },
       {
