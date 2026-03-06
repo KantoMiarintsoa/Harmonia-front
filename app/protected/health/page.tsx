@@ -3,7 +3,9 @@
 import { Heart, Smile, Droplets, Moon, Dumbbell } from "lucide-react"
 import { useHealth } from "@/features/health/hooks/use-health"
 import { useAppToast } from "@/hooks/use-app-toast"
+import { useConfirm } from "@/hooks/use-confirm"
 import { AppToast } from "@/components/ui/app-toast"
+import { ConfirmDialog } from "@/components/ui/confirm-dialog"
 import { MoodTracker } from "@/features/health/_components/mood-tracker"
 import { WaterTracker } from "@/features/health/_components/water-tracker"
 import { SleepTracker } from "@/features/health/_components/sleep-tracker"
@@ -25,38 +27,27 @@ export default function HealthPage() {
   } = useHealth()
 
   const { toasts, addToast, dismiss } = useAppToast()
+  const { ask, confirmState, handleConfirm, handleCancel } = useConfirm()
 
   const cardClass = "bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 shadow-sm"
 
   const todayMood = moods.find(m => m.date === todayStr)
   const todaySleep = sleep.find(s => s.date === todayStr)
 
-  // ── Wrapped CRUD with toasts ──
+  // ── Add handlers (with toast) ──
   const handleAddMood: typeof addMood = (...args) => {
     try { addMood(...args); addToast("success", "Humeur enregistrée") }
     catch { addToast("error", "Erreur lors de l'enregistrement") }
-  }
-  const handleDeleteMood = (id: string) => {
-    try { deleteMood(id); addToast("success", "Humeur supprimée") }
-    catch { addToast("error", "Erreur lors de la suppression") }
   }
 
   const handleAddSleep: typeof addSleep = (data) => {
     try { addSleep(data); addToast("success", `Sommeil enregistré : ${data.hours}h`) }
     catch { addToast("error", "Erreur lors de l'enregistrement") }
   }
-  const handleDeleteSleep = (id: string) => {
-    try { deleteSleep(id); addToast("success", "Entrée sommeil supprimée") }
-    catch { addToast("error", "Erreur lors de la suppression") }
-  }
 
   const handleAddExercise: typeof addExercise = (data) => {
     try { addExercise(data); addToast("success", `Activité enregistrée : ${data.duration} min`) }
     catch { addToast("error", "Erreur lors de l'enregistrement") }
-  }
-  const handleDeleteExercise = (id: string) => {
-    try { deleteExercise(id); addToast("success", "Activité supprimée") }
-    catch { addToast("error", "Erreur lors de la suppression") }
   }
 
   const handleSetWater = (n: number) => {
@@ -72,9 +63,26 @@ export default function HealthPage() {
     try { updateJournalEntry(id, data); addToast("success", "Journal mis à jour") }
     catch { addToast("error", "Erreur lors de la modification") }
   }
-  const handleDeleteJournal = (id: string) => {
-    try { deleteJournalEntry(id); addToast("success", "Entrée de journal supprimée") }
-    catch { addToast("error", "Erreur lors de la suppression") }
+
+  // ── Delete handlers (with confirm + toast) ──
+  const handleDeleteMood = async (id: string) => {
+    const ok = await ask({ title: "Supprimer cette entrée d'humeur ?", message: "Cette action est irréversible.", confirmLabel: "Supprimer", variant: "danger" })
+    if (ok) { deleteMood(id); addToast("success", "Entrée d'humeur supprimée") }
+  }
+
+  const handleDeleteSleep = async (id: string) => {
+    const ok = await ask({ title: "Supprimer cette entrée de sommeil ?", message: "Cette action est irréversible.", confirmLabel: "Supprimer", variant: "danger" })
+    if (ok) { deleteSleep(id); addToast("success", "Entrée de sommeil supprimée") }
+  }
+
+  const handleDeleteExercise = async (id: string) => {
+    const ok = await ask({ title: "Supprimer cette activité ?", message: "Cette action est irréversible.", confirmLabel: "Supprimer", variant: "danger" })
+    if (ok) { deleteExercise(id); addToast("success", "Activité supprimée") }
+  }
+
+  const handleDeleteJournal = async (id: string) => {
+    const ok = await ask({ title: "Supprimer cette entrée de journal ?", message: "Cette action est irréversible.", confirmLabel: "Supprimer", variant: "danger" })
+    if (ok) { deleteJournalEntry(id); addToast("success", "Entrée de journal supprimée") }
   }
 
   const kpis = [
@@ -183,6 +191,17 @@ export default function HealthPage() {
         onUpdate={handleUpdateJournal}
         onDelete={handleDeleteJournal}
         todayStr={todayStr}
+      />
+
+      <ConfirmDialog
+        open={confirmState.open}
+        title={confirmState.title}
+        message={confirmState.message}
+        confirmLabel={confirmState.confirmLabel}
+        cancelLabel={confirmState.cancelLabel}
+        variant={confirmState.variant}
+        onConfirm={handleConfirm}
+        onCancel={handleCancel}
       />
     </div>
   )

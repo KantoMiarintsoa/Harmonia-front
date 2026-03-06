@@ -33,7 +33,7 @@ export const navigation = [
       },
       {
         label: "Notifications",
-        href: "/notifications",
+        href: "/protected/notifications",
         icon: Bell,
       },
     ],

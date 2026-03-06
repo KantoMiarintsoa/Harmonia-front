@@ -8,6 +8,8 @@ import { TransactionTable } from "@/features/finance/_components/transaction-tab
 import { FinanceCharts } from "@/features/finance/_components/finance-charts"
 import { BudgetManager } from "@/features/finance/_components/budget-manager"
 import { Transaction } from "@/features/finance/types"
+import { useConfirm } from "@/hooks/use-confirm"
+import { ConfirmDialog } from "@/components/ui/confirm-dialog"
 
 type Tab = "aperçu" | "transactions" | "budget"
 
@@ -23,8 +25,13 @@ export default function FinancePage() {
   const [modalOpen, setModalOpen] = useState(false)
   const [editingTx, setEditingTx] = useState<Transaction | null>(null)
 
+  const { ask, confirmState, handleConfirm, handleCancel } = useConfirm()
+
   const handleEdit = (tx: Transaction) => { setEditingTx(tx); setModalOpen(true) }
-  const handleDelete = (id: string) => { if (confirm("Supprimer cette transaction ?")) deleteTransaction(id) }
+  const handleDelete = async (id: string) => {
+    const ok = await ask({ title: "Supprimer cette transaction ?", message: "Cette action est irréversible.", confirmLabel: "Supprimer", variant: "danger" })
+    if (ok) deleteTransaction(id)
+  }
   const handleClose = () => { setModalOpen(false); setEditingTx(null) }
 
   const TABS: { value: Tab; label: string }[] = [
@@ -161,6 +168,17 @@ export default function FinancePage() {
       <TransactionFormModal
         open={modalOpen} transaction={editingTx}
         onClose={handleClose} onAdd={addTransaction} onUpdate={updateTransaction}
+      />
+
+      <ConfirmDialog
+        open={confirmState.open}
+        title={confirmState.title}
+        message={confirmState.message}
+        confirmLabel={confirmState.confirmLabel}
+        cancelLabel={confirmState.cancelLabel}
+        variant={confirmState.variant}
+        onConfirm={handleConfirm}
+        onCancel={handleCancel}
       />
     </div>
   )

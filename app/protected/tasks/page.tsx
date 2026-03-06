@@ -8,6 +8,8 @@ import { TaskList } from "@/features/tasks/_components/task-list"
 import { TaskCalendar } from "@/features/tasks/_components/task-calendar"
 import { Task, TaskCategory } from "@/features/tasks/types"
 import { useI18n } from "@/contexts/i18n-context"
+import { useConfirm } from "@/hooks/use-confirm"
+import { ConfirmDialog } from "@/components/ui/confirm-dialog"
 
 type FilterCategory = TaskCategory | "toutes"
 type View = "liste" | "calendrier"
@@ -38,6 +40,8 @@ export default function TasksPage() {
     { value: "santé" as FilterCategory, label: locale === "en" ? "Health" : locale === "mg" ? "Fahasalamana" : "Santé" },
   ]
 
+  const { ask, confirmState, handleConfirm, handleCancel } = useConfirm()
+
   const openNew = (date?: string) => {
     setEditingTask(null)
     setDefaultDate(date)
@@ -45,7 +49,10 @@ export default function TasksPage() {
   }
 
   const handleEdit = (task: Task) => { setEditingTask(task); setDefaultDate(undefined); setModalOpen(true) }
-  const handleDelete = (id: string) => { if (confirm(l.delete)) deleteTask(id) }
+  const handleDelete = async (id: string) => {
+    const ok = await ask({ title: l.delete, message: "Cette action est irréversible.", confirmLabel: "Supprimer", variant: "danger" })
+    if (ok) deleteTask(id)
+  }
   const handleModalClose = () => { setModalOpen(false); setEditingTask(null); setDefaultDate(undefined) }
 
   return (
@@ -113,6 +120,17 @@ export default function TasksPage() {
         onClose={handleModalClose}
         onCreate={createTask}
         onUpdate={updateTask}
+      />
+
+      <ConfirmDialog
+        open={confirmState.open}
+        title={confirmState.title}
+        message={confirmState.message}
+        confirmLabel={confirmState.confirmLabel}
+        cancelLabel={confirmState.cancelLabel}
+        variant={confirmState.variant}
+        onConfirm={handleConfirm}
+        onCancel={handleCancel}
       />
     </div>
   )

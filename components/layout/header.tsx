@@ -1,6 +1,6 @@
 "use client"
 
-import { usePathname } from "next/navigation"
+import { usePathname, useRouter } from "next/navigation"
 import { useTheme } from "next-themes"
 import { Sun, Moon, Bell, ChevronDown, Check } from "lucide-react"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { useI18n } from "@/contexts/i18n-context"
 import { Locale } from "@/lib/i18n/translations"
+import { useNotifications } from "@/features/notifications/hooks/use-notifications"
 
 const LOCALE_FLAGS: Record<Locale, string> = {
   en: "🇬🇧",
@@ -22,8 +23,10 @@ const LOCALE_FLAGS: Record<Locale, string> = {
 
 export function Header() {
   const pathname = usePathname()
+  const router = useRouter()
   const { theme, setTheme } = useTheme()
   const { locale, setLocale, t } = useI18n()
+  const { unreadCount } = useNotifications()
 
   const pageTitle = t.pages[pathname as keyof typeof t.pages] ?? "Harmonia"
 
@@ -50,10 +53,18 @@ export function Header() {
           }
         </button>
 
-        {/* Notifications */}
-        <button className="relative h-9 w-9 flex items-center justify-center rounded-lg text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+        {/* Notifications bell */}
+        <button
+          onClick={() => router.push("/protected/notifications")}
+          className="relative h-9 w-9 flex items-center justify-center rounded-lg text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+          title={t.header.notifications}
+        >
           <Bell className="h-4 w-4" />
-          <span className="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-violet-500" />
+          {unreadCount > 0 && (
+            <span className="absolute top-1 right-1 min-w-[16px] h-4 px-1 flex items-center justify-center rounded-full bg-red-500 text-white text-[9px] font-bold leading-none">
+              {unreadCount > 9 ? "9+" : unreadCount}
+            </span>
+          )}
         </button>
 
         {/* Language selector */}
