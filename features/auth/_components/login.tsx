@@ -1,7 +1,4 @@
 import React from "react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Separator } from "@/components/ui/separator"
 import { Apple } from "lucide-react"
 import { Card } from "@/components/ui/card"
 import Link from "next/link"
@@ -10,7 +7,7 @@ function Login() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-400 via-purple-500 to-pink-500">
 
-      <Card className="bg-white w-[380px] rounded-2xl shadow-2xl p-8">
+      <Card className="bg-white w-[380px] rounded-2xl shadow-2xl p-8 border-0">
 
         <div className="text-center mb-6">
           <h2 className="text-purple-600 font-semibold tracking-wide">
@@ -29,35 +26,38 @@ function Login() {
 
         <form className="space-y-4">
 
-          <Input 
+          <input
             type="email"
             placeholder="example@gmail.com"
-            className="h-11"
+            className="w-full h-11 rounded-md border border-gray-200 bg-white px-3 text-sm text-gray-900 placeholder:text-gray-400 shadow-sm outline-none focus:ring-2 focus:ring-purple-400 focus:border-transparent transition"
           />
 
-          <Input 
+          <input
             type="password"
             placeholder="••••••••"
-            className="h-11"
+            className="w-full h-11 rounded-md border border-gray-200 bg-white px-3 text-sm text-gray-900 placeholder:text-gray-400 shadow-sm outline-none focus:ring-2 focus:ring-purple-400 focus:border-transparent transition"
           />
 
           <div className="text-right text-xs text-purple-600 cursor-pointer">
             Forgot password?
           </div>
 
-         <Link href="/unauthenticated/dashboard" className="w-full h-11 bg-purple-600 hover:bg-purple-700 text-white flex items-center justify-center rounded-md">
+          <Link
+            href="/protected/dashboard"
+            className="block w-full h-11 bg-purple-600 hover:bg-purple-700 text-white flex items-center justify-center rounded-md text-sm font-medium transition-colors"
+          >
             Login
           </Link>
 
           <div className="flex items-center gap-3 my-4">
-            <Separator className="flex-1" />
+            <div className="flex-1 h-px bg-gray-200" />
             <span className="text-xs text-gray-400">or</span>
-            <Separator className="flex-1" />
+            <div className="flex-1 h-px bg-gray-200" />
           </div>
 
-          <Button
-            variant="outline"
-            className="w-full h-11 flex items-center justify-center gap-2"
+          <button
+            type="button"
+            className="w-full h-11 flex items-center justify-center gap-2 rounded-md border border-gray-200 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors shadow-sm"
           >
             <img
               src="https://www.svgrepo.com/show/475656/google-color.svg"
@@ -65,21 +65,21 @@ function Login() {
               className="w-4 h-4"
             />
             Sign in with Google
-          </Button>
+          </button>
 
-          <Button
-            variant="outline"
-            className="w-full h-11 flex items-center justify-center gap-2"
+          <button
+            type="button"
+            className="w-full h-11 flex items-center justify-center gap-2 rounded-md border border-gray-200 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors shadow-sm"
           >
-            <Apple className="w-4 h-4" />
+            <Apple className="w-4 h-4 text-gray-700" />
             Sign in with Apple ID
-          </Button>
+          </button>
 
         </form>
 
         <div className="text-center text-xs text-gray-500 mt-6">
-          Don’t have an account?{" "}
-          <Link href="/unauthenticated/register" className="text-purple-600 cursor-pointer">
+          Don&apos;t have an account?{" "}
+          <Link href="/unauthenticated/register" className="text-purple-600 cursor-pointer hover:underline">
             Sign up
           </Link>
         </div>

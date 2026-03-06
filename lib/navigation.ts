@@ -23,7 +23,7 @@ export const navigation = [
       },
       {
         label: "Finance",
-        href: "/finance",
+        href: "/protected/finance",
         icon: Wallet,
       },
       {

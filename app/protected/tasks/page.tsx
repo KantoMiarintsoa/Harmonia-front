@@ -20,6 +20,7 @@ export default function TasksPage() {
   const [filter, setFilter] = useState<FilterCategory>("toutes")
   const [modalOpen, setModalOpen] = useState(false)
   const [editingTask, setEditingTask] = useState<Task | null>(null)
+  const [defaultDate, setDefaultDate] = useState<string | undefined>()
 
   const filteredTasks = filterByCategory(filter)
 
@@ -37,12 +38,18 @@ export default function TasksPage() {
     { value: "santé" as FilterCategory, label: locale === "en" ? "Health" : locale === "mg" ? "Fahasalamana" : "Santé" },
   ]
 
-  const handleEdit = (task: Task) => { setEditingTask(task); setModalOpen(true) }
+  const openNew = (date?: string) => {
+    setEditingTask(null)
+    setDefaultDate(date)
+    setModalOpen(true)
+  }
+
+  const handleEdit = (task: Task) => { setEditingTask(task); setDefaultDate(undefined); setModalOpen(true) }
   const handleDelete = (id: string) => { if (confirm(l.delete)) deleteTask(id) }
-  const handleModalClose = () => { setModalOpen(false); setEditingTask(null) }
+  const handleModalClose = () => { setModalOpen(false); setEditingTask(null); setDefaultDate(undefined) }
 
   return (
-    <div className="max-w-4xl mx-auto">
+    <div className={view === "calendrier" ? "max-w-full" : "max-w-4xl mx-auto"}>
 
       {/* Page header */}
       <div className="flex items-center justify-between mb-6">
@@ -51,7 +58,7 @@ export default function TasksPage() {
           <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">{l.count(tasks.length)}</p>
         </div>
         <button
-          onClick={() => { setEditingTask(null); setModalOpen(true) }}
+          onClick={() => openNew()}
           className="flex items-center gap-2 px-4 h-10 bg-purple-600 hover:bg-purple-700 text-white text-sm font-medium rounded-lg transition-colors shadow-sm"
         >
           <Plus className="h-4 w-4" />
@@ -61,7 +68,6 @@ export default function TasksPage() {
 
       {/* Controls bar */}
       <div className="flex items-center justify-between mb-5 gap-4">
-        {/* Category filters */}
         <div className="flex items-center gap-1 bg-gray-100 dark:bg-gray-800 p-1 rounded-lg">
           {FILTERS.map((f) => (
             <button key={f.value} onClick={() => setFilter(f.value)}
@@ -76,7 +82,6 @@ export default function TasksPage() {
           ))}
         </div>
 
-        {/* View toggle */}
         <div className="flex items-center gap-1 bg-gray-100 dark:bg-gray-800 p-1 rounded-lg">
           {([
             { value: "liste" as View, icon: List, label: l.list },
@@ -98,10 +103,17 @@ export default function TasksPage() {
 
       {view === "liste"
         ? <TaskList tasks={filteredTasks} onEdit={handleEdit} onDelete={handleDelete} onToggle={toggleStatus} />
-        : <TaskCalendar tasks={filteredTasks} onEdit={handleEdit} onToggle={toggleStatus} />
+        : <TaskCalendar tasks={filteredTasks} onEdit={handleEdit} onToggle={toggleStatus} onNew={openNew} />
       }
 
-      <TaskFormModal open={modalOpen} task={editingTask} onClose={handleModalClose} onCreate={createTask} onUpdate={updateTask} />
+      <TaskFormModal
+        open={modalOpen}
+        task={editingTask}
+        defaultDate={defaultDate}
+        onClose={handleModalClose}
+        onCreate={createTask}
+        onUpdate={updateTask}
+      />
     </div>
   )
 }

@@ -9,6 +9,7 @@ import { useI18n } from "@/contexts/i18n-context"
 interface TaskFormModalProps {
   open: boolean
   task?: Task | null
+  defaultDate?: string
   onClose: () => void
   onCreate: (data: Omit<Task, "id" | "createdAt">) => void
   onUpdate: (id: string, data: Partial<Omit<Task, "id" | "createdAt">>) => void
@@ -22,7 +23,7 @@ const EMPTY_FORM = {
   dueDate: new Date().toISOString().split("T")[0],
 }
 
-export function TaskFormModal({ open, task, onClose, onCreate, onUpdate }: TaskFormModalProps) {
+export function TaskFormModal({ open, task, defaultDate, onClose, onCreate, onUpdate }: TaskFormModalProps) {
   const [form, setForm] = useState(EMPTY_FORM)
   const { locale } = useI18n()
 
@@ -37,9 +38,9 @@ export function TaskFormModal({ open, task, onClose, onCreate, onUpdate }: TaskF
     if (task) {
       setForm({ title: task.title, description: task.description, category: task.category, status: task.status, dueDate: task.dueDate })
     } else {
-      setForm(EMPTY_FORM)
+      setForm({ ...EMPTY_FORM, dueDate: defaultDate ?? EMPTY_FORM.dueDate })
     }
-  }, [task, open])
+  }, [task, open, defaultDate])
 
   if (!open) return null
 
