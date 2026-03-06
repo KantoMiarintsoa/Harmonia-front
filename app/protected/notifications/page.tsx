@@ -5,6 +5,40 @@ import { Bell, CheckCheck, Trash2, AlertTriangle, Clock, TrendingDown, ArrowRigh
 import { useNotifications } from "@/features/notifications/hooks/use-notifications"
 import { NotificationItem, NotifType, NotifSeverity } from "@/features/notifications/types"
 import { useState } from "react"
+import { useI18n } from "@/contexts/i18n-context"
+
+const LABELS = {
+  en: {
+    title: "Notifications", clearAll: "Clear all",
+    critical: "Critical", warnings: "Warnings",
+    all: "All", tasks: "Tasks", finance: "Finance",
+    noNotifs: "No notifications", noNotifsDesc: "Everything is in order, keep it up!",
+    allGood: "All up to date",
+    alerts: (n: number) => `${n} active alert${n > 1 ? "s" : ""}`,
+    overdue: "Overdue", today: "Today", budget: "Budget",
+    justNow: "just now", ago: (n: number, u: string) => `${n}${u} ago`,
+  },
+  fr: {
+    title: "Notifications", clearAll: "Tout effacer",
+    critical: "Critiques", warnings: "Avertissements",
+    all: "Toutes", tasks: "Tâches", finance: "Finance",
+    noNotifs: "Aucune notification", noNotifsDesc: "Tout est en ordre, continuez comme ça !",
+    allGood: "Tout est à jour",
+    alerts: (n: number) => `${n} alerte${n > 1 ? "s" : ""} active${n > 1 ? "s" : ""}`,
+    overdue: "Retard", today: "Aujourd'hui", budget: "Budget",
+    justNow: "à l'instant", ago: (n: number, u: string) => `il y a ${n}${u}`,
+  },
+  mg: {
+    title: "Fampandrenesana", clearAll: "Esorina rehetra",
+    critical: "Maika", warnings: "Fampitandremana",
+    all: "Rehetra", tasks: "Asa", finance: "Vola",
+    noNotifs: "Tsy misy fampandrenesana", noNotifsDesc: "Tsara daholo, mitoero toy izany!",
+    allGood: "Efa vita rehetra",
+    alerts: (n: number) => `${n} fampandrenesana`,
+    overdue: "Diso fotoana", today: "Androany", budget: "Tetibola",
+    justNow: "vao teo", ago: (n: number, u: string) => `${n}${u} lasa`,
+  },
+}
 
 type FilterTab = "all" | "tasks" | "finance"
 
@@ -21,26 +55,21 @@ const TYPE_ICON: Record<NotifType, React.ReactNode> = {
   budget_warning:  <TrendingDown className="h-4 w-4" />,
 }
 
-const TYPE_LABEL: Record<NotifType, string> = {
-  task_overdue:    "Retard",
-  task_due_today:  "Aujourd'hui",
-  budget_exceeded: "Budget",
-  budget_warning:  "Budget",
-}
-
-function timeAgo(ts: string): string {
+function timeAgo(ts: string, l: typeof LABELS["fr"]): string {
   const diff = Date.now() - new Date(ts).getTime()
   const min = Math.floor(diff / 60000)
-  if (min < 1) return "à l'instant"
-  if (min < 60) return `il y a ${min} min`
+  if (min < 1) return l.justNow
+  if (min < 60) return l.ago(min, " min")
   const h = Math.floor(min / 60)
-  if (h < 24) return `il y a ${h}h`
-  const d = Math.floor(h / 24)
-  return `il y a ${d}j`
+  if (h < 24) return l.ago(h, "h")
+  return l.ago(Math.floor(h / 24), "j")
 }
 
-function NotifCard({ notif, onDismiss }: { notif: NotificationItem; onDismiss: (id: string) => void }) {
+function NotifCard({ notif, onDismiss, l }: { notif: NotificationItem; onDismiss: (id: string) => void; l: typeof LABELS["fr"] }) {
   const sev = SEVERITY_CONFIG[notif.severity]
+  const TYPE_LABEL: Record<NotifType, string> = {
+    task_overdue: l.overdue, task_due_today: l.today, budget_exceeded: l.budget, budget_warning: l.budget,
+  }
   return (
     <div className={`flex items-start gap-4 p-4 rounded-xl border ${sev.border} bg-white dark:bg-gray-800 hover:shadow-sm transition-all group`}>
       {/* Severity dot */}
@@ -57,7 +86,7 @@ function NotifCard({ notif, onDismiss }: { notif: NotificationItem; onDismiss: (
           <span className={`text-[10px] font-semibold px-1.5 py-0.5 rounded-full ${sev.bg} ${sev.color}`}>
             {TYPE_LABEL[notif.type]}
           </span>
-          <span className="text-[10px] text-gray-400 dark:text-gray-500">{timeAgo(notif.timestamp)}</span>
+          <span className="text-[10px] text-gray-400 dark:text-gray-500">{timeAgo(notif.timestamp, l)}</span>
         </div>
         <p className="text-sm font-semibold text-gray-800 dark:text-gray-100">{notif.title}</p>
         <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5 leading-relaxed">{notif.message}</p>
@@ -80,12 +109,14 @@ function NotifCard({ notif, onDismiss }: { notif: NotificationItem; onDismiss: (
 
 export default function NotificationsPage() {
   const { notifications, unreadCount, dismiss, dismissAll } = useNotifications()
+  const { locale } = useI18n()
+  const l = LABELS[locale]
   const [activeTab, setActiveTab] = useState<FilterTab>("all")
 
   const tabs: { value: FilterTab; label: string; count: number }[] = [
-    { value: "all",     label: "Toutes",   count: notifications.length },
-    { value: "tasks",   label: "Tâches",   count: notifications.filter(n => n.type.startsWith("task")).length },
-    { value: "finance", label: "Finance",  count: notifications.filter(n => n.type.startsWith("budget")).length },
+    { value: "all",     label: l.all,      count: notifications.length },
+    { value: "tasks",   label: l.tasks,    count: notifications.filter(n => n.type.startsWith("task")).length },
+    { value: "finance", label: l.finance,  count: notifications.filter(n => n.type.startsWith("budget")).length },
   ]
 
   const filtered = notifications.filter(n => {
@@ -107,9 +138,9 @@ export default function NotificationsPage() {
             <Bell className="h-5 w-5 text-violet-500 dark:text-violet-400" />
           </div>
           <div>
-            <h1 className="text-xl font-bold text-gray-800 dark:text-gray-100">Notifications</h1>
+            <h1 className="text-xl font-bold text-gray-800 dark:text-gray-100">{l.title}</h1>
             <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">
-              {unreadCount > 0 ? `${unreadCount} alerte${unreadCount > 1 ? "s" : ""} active${unreadCount > 1 ? "s" : ""}` : "Tout est à jour"}
+              {unreadCount > 0 ? l.alerts(unreadCount) : l.allGood}
             </p>
           </div>
         </div>
@@ -120,7 +151,7 @@ export default function NotificationsPage() {
             className="flex items-center gap-2 h-9 px-4 rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 text-sm font-medium hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
           >
             <CheckCheck className="h-4 w-4" />
-            Tout effacer
+            {l.clearAll}
           </button>
         )}
       </div>
@@ -133,7 +164,7 @@ export default function NotificationsPage() {
               <AlertTriangle className="h-5 w-5 text-red-500" />
             </div>
             <div>
-              <p className="text-xs text-gray-500 dark:text-gray-400">Critiques</p>
+              <p className="text-xs text-gray-500 dark:text-gray-400">{l.critical}</p>
               <p className="text-2xl font-bold text-red-600 dark:text-red-400">{notifications.filter(n => n.severity === "critical").length}</p>
             </div>
           </div>
@@ -142,7 +173,7 @@ export default function NotificationsPage() {
               <Clock className="h-5 w-5 text-amber-500" />
             </div>
             <div>
-              <p className="text-xs text-gray-500 dark:text-gray-400">Avertissements</p>
+              <p className="text-xs text-gray-500 dark:text-gray-400">{l.warnings}</p>
               <p className="text-2xl font-bold text-amber-600 dark:text-amber-400">{notifications.filter(n => n.severity === "warning").length}</p>
             </div>
           </div>
@@ -178,8 +209,8 @@ export default function NotificationsPage() {
           <div className="h-16 w-16 rounded-2xl bg-gray-100 dark:bg-gray-800 flex items-center justify-center mb-4">
             <BellOff className="h-8 w-8 text-gray-300 dark:text-gray-600" />
           </div>
-          <p className="text-base font-semibold text-gray-500 dark:text-gray-400">Aucune notification</p>
-          <p className="text-sm text-gray-400 dark:text-gray-500 mt-1">Tout est en ordre, continuez comme ça !</p>
+          <p className="text-base font-semibold text-gray-500 dark:text-gray-400">{l.noNotifs}</p>
+          <p className="text-sm text-gray-400 dark:text-gray-500 mt-1">{l.noNotifsDesc}</p>
         </div>
       ) : (
         <div className="space-y-4">
@@ -187,18 +218,18 @@ export default function NotificationsPage() {
             <div className="space-y-2">
               <p className="text-[11px] font-bold text-red-500 uppercase tracking-wider flex items-center gap-1.5">
                 <span className="h-1.5 w-1.5 rounded-full bg-red-500 inline-block" />
-                Critiques — {critical.length}
+                {l.critical} — {critical.length}
               </p>
-              {critical.map(n => <NotifCard key={n.id} notif={n} onDismiss={dismiss} />)}
+              {critical.map(n => <NotifCard key={n.id} notif={n} onDismiss={dismiss} l={l} />)}
             </div>
           )}
           {warning.length > 0 && (
             <div className="space-y-2">
               <p className="text-[11px] font-bold text-amber-500 uppercase tracking-wider flex items-center gap-1.5">
                 <span className="h-1.5 w-1.5 rounded-full bg-amber-500 inline-block" />
-                Avertissements — {warning.length}
+                {l.warnings} — {warning.length}
               </p>
-              {warning.map(n => <NotifCard key={n.id} notif={n} onDismiss={dismiss} />)}
+              {warning.map(n => <NotifCard key={n.id} notif={n} onDismiss={dismiss} l={l} />)}
             </div>
           )}
         </div>

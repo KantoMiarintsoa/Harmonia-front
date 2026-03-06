@@ -10,6 +10,28 @@ import { BudgetManager } from "@/features/finance/_components/budget-manager"
 import { Transaction } from "@/features/finance/types"
 import { useConfirm } from "@/hooks/use-confirm"
 import { ConfirmDialog } from "@/components/ui/confirm-dialog"
+import { useI18n } from "@/contexts/i18n-context"
+
+const LABELS = {
+  en: {
+    title: "Finance", subtitle: "Track your income and expenses",
+    newTx: "New transaction", income: "Total income", expense: "Total expenses", balance: "Balance",
+    overview: "Overview", transactions: "Transactions", budget: "Budget",
+    recentTx: "Recent transactions", deleteTx: "Delete this transaction?",
+  },
+  fr: {
+    title: "Finance", subtitle: "Suivi de vos revenus et dépenses",
+    newTx: "Nouvelle transaction", income: "Total revenus", expense: "Total dépenses", balance: "Solde",
+    overview: "Aperçu", transactions: "Transactions", budget: "Budget",
+    recentTx: "Transactions récentes", deleteTx: "Supprimer cette transaction ?",
+  },
+  mg: {
+    title: "Vola", subtitle: "Fanaraha-maso ny vola miditra sy mivoaka",
+    newTx: "Fifanakalozana vaovao", income: "Vola miditra", expense: "Vola mivoaka", balance: "Fitambaran'ny vola",
+    overview: "Foverview", transactions: "Fifanakalozana", budget: "Tetibola",
+    recentTx: "Fifanakalozana farany", deleteTx: "Hamafa ity fifanakalozana ity?",
+  },
+}
 
 type Tab = "aperçu" | "transactions" | "budget"
 
@@ -26,18 +48,20 @@ export default function FinancePage() {
   const [editingTx, setEditingTx] = useState<Transaction | null>(null)
 
   const { ask, confirmState, handleConfirm, handleCancel } = useConfirm()
+  const { locale } = useI18n()
+  const l = LABELS[locale]
 
   const handleEdit = (tx: Transaction) => { setEditingTx(tx); setModalOpen(true) }
   const handleDelete = async (id: string) => {
-    const ok = await ask({ title: "Supprimer cette transaction ?", message: "Cette action est irréversible.", confirmLabel: "Supprimer", variant: "danger" })
+    const ok = await ask({ title: l.deleteTx, message: locale === "en" ? "This action is irreversible." : locale === "mg" ? "Tsy azo averina." : "Cette action est irréversible.", confirmLabel: locale === "en" ? "Delete" : locale === "mg" ? "Fafao" : "Supprimer", variant: "danger" })
     if (ok) deleteTransaction(id)
   }
   const handleClose = () => { setModalOpen(false); setEditingTx(null) }
 
   const TABS: { value: Tab; label: string }[] = [
-    { value: "aperçu", label: "Aperçu" },
-    { value: "transactions", label: "Transactions" },
-    { value: "budget", label: "Budget" },
+    { value: "aperçu", label: l.overview },
+    { value: "transactions", label: l.transactions },
+    { value: "budget", label: l.budget },
   ]
 
   const cardClass = "bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 shadow-sm"
@@ -48,15 +72,15 @@ export default function FinancePage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-xl font-bold text-gray-800 dark:text-gray-100">Finance</h1>
-          <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">Suivi de vos revenus et dépenses</p>
+          <h1 className="text-xl font-bold text-gray-800 dark:text-gray-100">{l.title}</h1>
+          <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">{l.subtitle}</p>
         </div>
         <button
           onClick={() => { setEditingTx(null); setModalOpen(true) }}
           className="flex items-center gap-2 px-4 h-10 bg-purple-600 hover:bg-purple-700 text-white text-sm font-medium rounded-lg transition-colors shadow-sm"
         >
           <Plus className="h-4 w-4" />
-          Nouvelle transaction
+          {l.newTx}
         </button>
       </div>
 
@@ -67,7 +91,7 @@ export default function FinancePage() {
             <TrendingUp className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
           </div>
           <div>
-            <p className="text-xs text-gray-500 dark:text-gray-400">Total revenus</p>
+            <p className="text-xs text-gray-500 dark:text-gray-400">{l.income}</p>
             <p className="text-xl font-bold text-emerald-600 dark:text-emerald-400 mt-0.5">
               +{totalRevenu.toLocaleString("fr-FR", { style: "currency", currency: "EUR" })}
             </p>
@@ -79,7 +103,7 @@ export default function FinancePage() {
             <TrendingDown className="h-5 w-5 text-red-500 dark:text-red-400" />
           </div>
           <div>
-            <p className="text-xs text-gray-500 dark:text-gray-400">Total dépenses</p>
+            <p className="text-xs text-gray-500 dark:text-gray-400">{l.expense}</p>
             <p className="text-xl font-bold text-red-500 dark:text-red-400 mt-0.5">
               -{totalDépense.toLocaleString("fr-FR", { style: "currency", currency: "EUR" })}
             </p>
@@ -91,7 +115,7 @@ export default function FinancePage() {
             <Wallet className={`h-5 w-5 ${solde >= 0 ? "text-violet-600 dark:text-violet-400" : "text-red-500 dark:text-red-400"}`} />
           </div>
           <div>
-            <p className="text-xs text-gray-500 dark:text-gray-400">Solde</p>
+            <p className="text-xs text-gray-500 dark:text-gray-400">{l.balance}</p>
             <p className={`text-xl font-bold mt-0.5 ${solde >= 0 ? "text-violet-600 dark:text-violet-400" : "text-red-500 dark:text-red-400"}`}>
               {solde >= 0 ? "+" : ""}{solde.toLocaleString("fr-FR", { style: "currency", currency: "EUR" })}
             </p>
@@ -123,7 +147,7 @@ export default function FinancePage() {
 
             {/* Recent transactions */}
             <div className={`${cardClass} p-5`}>
-              <h2 className="text-sm font-semibold text-gray-800 dark:text-gray-100 mb-4">Transactions récentes</h2>
+              <h2 className="text-sm font-semibold text-gray-800 dark:text-gray-100 mb-4">{l.recentTx}</h2>
               <div className="space-y-2">
                 {transactions.slice(0, 6).map((tx) => {
                   const isRevenu = tx.type === "revenu"
