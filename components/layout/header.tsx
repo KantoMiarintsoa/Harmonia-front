@@ -16,6 +16,7 @@ import { useI18n } from "@/contexts/i18n-context"
 import { Locale } from "@/lib/i18n/translations"
 import { useNotifications } from "@/features/notifications/hooks/use-notifications"
 import { NotificationItem, NotifType } from "@/features/notifications/types"
+import { clearSession } from "@/lib/auth"
 import Link from "next/link"
 
 const LOCALE_FLAGS: Record<Locale, string> = {
@@ -258,7 +259,10 @@ export function Header() {
             <DropdownMenuItem className="cursor-pointer" onClick={() => router.push("/protected/settings?tab=profil")}>{t.header.profile}</DropdownMenuItem>
             <DropdownMenuItem className="cursor-pointer" onClick={() => router.push("/protected/settings")}>{t.header.settings}</DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem className="cursor-pointer text-red-500 focus:text-red-500">
+            <DropdownMenuItem
+              className="cursor-pointer text-red-500 focus:text-red-500"
+              onClick={() => { clearSession(); router.push("/unauthenticated/login") }}
+            >
               {t.header.logout}
             </DropdownMenuItem>
           </DropdownMenuContent>

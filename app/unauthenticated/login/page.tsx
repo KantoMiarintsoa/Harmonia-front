@@ -1,12 +1,5 @@
-// import Login from '@/features/auth/_components/login'
-// import React from 'react'
+import Login from "@/features/auth/_components/login"
 
-// function LoginPage() {
-//   return (
-//     <div>
-//         <Login/>
-//     </div>
-//   )
-// }
-
-// export default LoginPage
+export default function LoginPage() {
+  return <Login />
+}

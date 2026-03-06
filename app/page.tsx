@@ -1,24 +1,5 @@
-import { Header } from '@/components/layout/header'
-import Login from '@/features/auth/_components/login'
-import React from 'react'
+import { redirect } from "next/navigation"
 
-function HomePage() {
-  return (
-    <div>
-      <Login/>
-    </div>
-  )
+export default function HomePage() {
+  redirect("/unauthenticated/login")
 }
-
-export default HomePage
-
-
-// export default async function Home() {
-//   const user = await getCurrentUser()
-
-//   if (user) {
-//     redirect("/dashboard")
-//   } else {
-//     redirect("/login")
-//   }
-// }
