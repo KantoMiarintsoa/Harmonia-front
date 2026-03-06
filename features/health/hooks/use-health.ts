@@ -1,9 +1,9 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { MoodEntry, MoodLevel, WaterEntry, SleepEntry, ExerciseEntry, ExerciseType } from "../types"
+import { MoodEntry, MoodLevel, WaterEntry, SleepEntry, ExerciseEntry, ExerciseType, JournalEntry, JournalTag } from "../types"
 
-const KEYS = { mood: "harmonia_mood", water: "harmonia_water", sleep: "harmonia_sleep", exercise: "harmonia_exercise" }
+const KEYS = { mood: "harmonia_mood", water: "harmonia_water", sleep: "harmonia_sleep", exercise: "harmonia_exercise", journal: "harmonia_journal" }
 
 function today() { return new Date().toISOString().split("T")[0] }
 function daysAgo(n: number) { return new Date(Date.now() - n * 86400000).toISOString().split("T")[0] }
@@ -34,6 +34,13 @@ const SAMPLE_SLEEP: SleepEntry[] = [
   { id: "s5", date: daysAgo(4), hours: 7.5, quality: 3, note: "",                   createdAt: new Date().toISOString() },
 ]
 
+const SAMPLE_JOURNAL: JournalEntry[] = [
+  { id: "j1", date: today(),    title: "Une bonne journée", content: "J'ai bien avancé sur mes projets aujourd'hui. Je me sens productif et motivé. Le temps était agréable et j'ai pu faire une pause déjeuner à l'extérieur.", tags: ["gratitude", "bien-être"], createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
+  { id: "j2", date: daysAgo(1), title: "Réflexions du soir",  content: "Je dois mieux gérer mon temps. Beaucoup de réunions aujourd'hui, peu de temps pour le travail de fond. Demain, je bloquerai des créneaux de concentration.", tags: ["réflexion", "objectifs"], createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
+  { id: "j3", date: daysAgo(3), title: "Grateful today",     content: "Reconnaissant pour ma famille, ma santé et les opportunités que j'ai. Séance de sport matinale, ça fait vraiment du bien pour commencer la journée !", tags: ["gratitude", "humeur"], createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
+  { id: "j4", date: daysAgo(5), title: "Objectifs du mois",  content: "Ce mois-ci je veux : finir le projet Harmonia, lire 2 livres, faire du sport 4x/semaine, et passer plus de temps en nature.", tags: ["objectifs"], createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
+]
+
 const SAMPLE_EXERCISE: ExerciseEntry[] = [
   { id: "e1", date: today(),    type: "course",      duration: 30, note: "5km parc",     createdAt: new Date().toISOString() },
   { id: "e2", date: daysAgo(2), type: "musculation", duration: 45, note: "Haut du corps", createdAt: new Date().toISOString() },
@@ -46,6 +53,7 @@ export function useHealth() {
   const [water, setWater] = useState<WaterEntry[]>([])
   const [sleep, setSleep] = useState<SleepEntry[]>([])
   const [exercise, setExercise] = useState<ExerciseEntry[]>([])
+  const [journal, setJournal] = useState<JournalEntry[]>([])
 
   useEffect(() => {
     const load = <T>(key: string, sample: T[]): T[] => {
@@ -57,6 +65,7 @@ export function useHealth() {
     setWater(load(KEYS.water, SAMPLE_WATER))
     setSleep(load(KEYS.sleep, SAMPLE_SLEEP))
     setExercise(load(KEYS.exercise, SAMPLE_EXERCISE))
+    setJournal(load(KEYS.journal, SAMPLE_JOURNAL))
   }, [])
 
   // ── Mood ──
@@ -111,6 +120,24 @@ export function useHealth() {
     setExercise(updated); localStorage.setItem(KEYS.exercise, JSON.stringify(updated))
   }
 
+  // ── Journal ──
+  const addJournalEntry = (data: { title: string; content: string; tags: JournalTag[]; date: string }) => {
+    const now = new Date().toISOString()
+    const entry: JournalEntry = { ...data, id: crypto.randomUUID(), createdAt: now, updatedAt: now }
+    const updated = [entry, ...journal]
+    setJournal(updated); localStorage.setItem(KEYS.journal, JSON.stringify(updated))
+  }
+
+  const updateJournalEntry = (id: string, data: { title: string; content: string; tags: JournalTag[]; date: string }) => {
+    const updated = journal.map(j => j.id === id ? { ...j, ...data, updatedAt: new Date().toISOString() } : j)
+    setJournal(updated); localStorage.setItem(KEYS.journal, JSON.stringify(updated))
+  }
+
+  const deleteJournalEntry = (id: string) => {
+    const updated = journal.filter(j => j.id !== id)
+    setJournal(updated); localStorage.setItem(KEYS.journal, JSON.stringify(updated))
+  }
+
   // ── Stats (last 7 days) ──
   const last7 = Array.from({ length: 7 }, (_, i) => daysAgo(6 - i))
 
@@ -137,11 +164,12 @@ export function useHealth() {
     .reduce((s, e) => s + e.duration, 0)
 
   return {
-    moods, water, sleep, exercise,
+    moods, water, sleep, exercise, journal,
     addMood, deleteMood,
     setWaterGlasses, todayWater,
     addSleep, deleteSleep,
     addExercise, deleteExercise,
+    addJournalEntry, updateJournalEntry, deleteJournalEntry,
     weeklyMood, weeklySleep,
     avgMood, avgSleep, totalExerciseThisWeek,
     todayStr: today(),

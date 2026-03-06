@@ -58,3 +58,24 @@ export const EXERCISE_CONFIG: Record<ExerciseType, { label: string; emoji: strin
 }
 
 export const WATER_GOAL = 8
+
+export type JournalTag = "gratitude" | "objectifs" | "réflexion" | "bien-être" | "humeur" | "autre"
+
+export interface JournalEntry {
+  id: string
+  date: string // YYYY-MM-DD
+  title: string
+  content: string
+  tags: JournalTag[]
+  createdAt: string
+  updatedAt: string
+}
+
+export const JOURNAL_TAGS: Record<JournalTag, { label: string; color: string; bg: string; dot: string }> = {
+  gratitude:   { label: "Gratitude",   color: "text-amber-700 dark:text-amber-400",   bg: "bg-amber-50 dark:bg-amber-950",   dot: "bg-amber-400"   },
+  objectifs:   { label: "Objectifs",   color: "text-blue-700 dark:text-blue-400",     bg: "bg-blue-50 dark:bg-blue-950",     dot: "bg-blue-400"    },
+  réflexion:   { label: "Réflexion",   color: "text-violet-700 dark:text-violet-400", bg: "bg-violet-50 dark:bg-violet-950", dot: "bg-violet-400"  },
+  "bien-être": { label: "Bien-être",   color: "text-emerald-700 dark:text-emerald-400",bg: "bg-emerald-50 dark:bg-emerald-950",dot: "bg-emerald-400"},
+  humeur:      { label: "Humeur",      color: "text-pink-700 dark:text-pink-400",     bg: "bg-pink-50 dark:bg-pink-950",     dot: "bg-pink-400"    },
+  autre:       { label: "Autre",       color: "text-gray-600 dark:text-gray-400",     bg: "bg-gray-100 dark:bg-gray-800",    dot: "bg-gray-400"    },
+}

@@ -6,15 +6,17 @@ import { MoodTracker } from "@/features/health/_components/mood-tracker"
 import { WaterTracker } from "@/features/health/_components/water-tracker"
 import { SleepTracker } from "@/features/health/_components/sleep-tracker"
 import { ExerciseTracker } from "@/features/health/_components/exercise-tracker"
+import { JournalTracker } from "@/features/health/_components/journal-tracker"
 import { MOOD_CONFIG, WATER_GOAL } from "@/features/health/types"
 
 export default function HealthPage() {
   const {
-    moods, sleep, exercise,
+    moods, sleep, exercise, journal,
     addMood, deleteMood,
     setWaterGlasses, todayWater,
     addSleep, deleteSleep,
     addExercise, deleteExercise,
+    addJournalEntry, updateJournalEntry, deleteJournalEntry,
     avgMood, avgSleep, totalExerciseThisWeek,
     todayStr,
   } = useHealth()
@@ -111,6 +113,15 @@ export default function HealthPage() {
           totalMinutesThisWeek={totalExerciseThisWeek}
         />
       </div>
+
+      {/* Journal — full width */}
+      <JournalTracker
+        entries={journal}
+        onAdd={addJournalEntry}
+        onUpdate={updateJournalEntry}
+        onDelete={deleteJournalEntry}
+        todayStr={todayStr}
+      />
     </div>
   )
 }
