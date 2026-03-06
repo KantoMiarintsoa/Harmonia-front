@@ -125,23 +125,25 @@ export function Header() {
   const preview = notifications.slice(0, 5)
 
   return (
-    <header className="flex h-14 items-center justify-between px-5 bg-white dark:bg-gray-900 border-b border-gray-100 dark:border-gray-800 shrink-0 relative z-40">
+    <header className="flex h-14 items-center justify-between px-6 bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl border-b border-gray-200/60 dark:border-gray-700/60 border-l-0 shrink-0 relative z-40">
 
       {/* Page title */}
-      <h1 className="text-base font-semibold text-gray-800 dark:text-gray-100 ml-6">
-        {pageTitle}
-      </h1>
+      <div className="flex items-center gap-3 ml-4">
+        <h1 className="text-[15px] font-bold text-gray-900 dark:text-gray-50 tracking-tight">
+          {pageTitle}
+        </h1>
+      </div>
 
       {/* Right controls */}
-      <div className="flex items-center gap-1">
+      <div className="flex items-center gap-1.5">
 
         {/* Dark mode toggle */}
         <button
           onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-          className="h-9 w-9 flex items-center justify-center rounded-lg text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+          className="h-8 w-8 flex items-center justify-center rounded-xl text-gray-500 dark:text-gray-400 hover:bg-violet-50 dark:hover:bg-violet-950/60 hover:text-violet-600 dark:hover:text-violet-400 transition-all duration-200"
           title={theme === "dark" ? t.theme.light : t.theme.dark}
         >
-          {theme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+          {theme === "dark" ? <Sun className="h-[15px] w-[15px]" /> : <Moon className="h-[15px] w-[15px]" />}
         </button>
 
         {/* Notifications bell + dropdown */}
@@ -149,12 +151,12 @@ export function Header() {
           <button
             ref={bellRef}
             onClick={() => setNotifOpen(o => !o)}
-            className={`relative h-9 w-9 flex items-center justify-center rounded-lg transition-colors ${notifOpen ? "bg-gray-100 dark:bg-gray-800 text-violet-600 dark:text-violet-400" : "text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800"}`}
+            className={`relative h-8 w-8 flex items-center justify-center rounded-xl transition-all duration-200 ${notifOpen ? "bg-violet-50 dark:bg-violet-950/60 text-violet-600 dark:text-violet-400" : "text-gray-500 dark:text-gray-400 hover:bg-violet-50 dark:hover:bg-violet-950/60 hover:text-violet-600 dark:hover:text-violet-400"}`}
             title={t.header.notifications}
           >
-            <Bell className="h-4 w-4" />
+            <Bell className="h-[15px] w-[15px]" />
             {unreadCount > 0 && (
-              <span className="absolute top-1 right-1 min-w-[16px] h-4 px-1 flex items-center justify-center rounded-full bg-red-500 text-white text-[9px] font-bold leading-none">
+              <span className="absolute -top-0.5 -right-0.5 min-w-[16px] h-4 px-1 flex items-center justify-center rounded-full bg-red-500 text-white text-[9px] font-bold leading-none ring-2 ring-white dark:ring-gray-900 animate-pulse">
                 {unreadCount > 9 ? "9+" : unreadCount}
               </span>
             )}
@@ -164,7 +166,7 @@ export function Header() {
           {notifOpen && (
             <div
               ref={panelRef}
-              className="absolute right-0 top-full mt-2 w-80 bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-xl overflow-hidden z-50"
+              className="absolute right-0 top-full mt-2 w-80 bg-white dark:bg-gray-800 rounded-2xl border border-gray-200/80 dark:border-gray-700 shadow-2xl shadow-gray-200/50 dark:shadow-black/30 overflow-hidden z-50"
             >
               {/* Header */}
               <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100 dark:border-gray-700">
@@ -219,9 +221,9 @@ export function Header() {
         {/* Language selector */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <button className="flex items-center gap-1.5 h-9 px-2.5 rounded-lg text-sm text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
-              <span>{LOCALE_FLAGS[locale]}</span>
-              <span className="text-xs font-medium uppercase">{locale}</span>
+            <button className="flex items-center gap-1.5 h-8 px-2.5 rounded-xl text-sm text-gray-600 dark:text-gray-300 hover:bg-violet-50 dark:hover:bg-violet-950/60 hover:text-violet-600 dark:hover:text-violet-400 transition-all duration-200">
+              <span className="text-sm">{LOCALE_FLAGS[locale]}</span>
+              <span className="text-[11px] font-semibold uppercase tracking-wide">{locale}</span>
               <ChevronDown className="h-3 w-3 text-gray-400" />
             </button>
           </DropdownMenuTrigger>
@@ -245,13 +247,13 @@ export function Header() {
         {/* User menu */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <button className="flex items-center gap-2 h-9 pl-1 pr-2.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors ml-1">
-              <Avatar className="h-7 w-7">
-                <AvatarFallback className="bg-violet-100 dark:bg-violet-900 text-violet-700 dark:text-violet-300 text-xs font-semibold">
+            <button className="flex items-center gap-2 h-8 pl-1 pr-2.5 rounded-xl hover:bg-violet-50 dark:hover:bg-violet-950/60 transition-all duration-200 ml-1.5 border border-transparent hover:border-violet-200/60 dark:hover:border-violet-800/40">
+              <Avatar className="h-7 w-7 ring-2 ring-violet-100 dark:ring-violet-900">
+                <AvatarFallback className="bg-gradient-to-br from-violet-100 to-purple-100 dark:from-violet-900 dark:to-purple-900 text-violet-700 dark:text-violet-300 text-[10px] font-bold">
                   {profile.initials}
                 </AvatarFallback>
               </Avatar>
-              <span className="text-sm font-medium text-gray-700 dark:text-gray-200 hidden sm:block">{profile.name}</span>
+              <span className="text-[13px] font-semibold text-gray-700 dark:text-gray-200 hidden sm:block">{profile.name}</span>
               <ChevronDown className="h-3 w-3 text-gray-400 hidden sm:block" />
             </button>
           </DropdownMenuTrigger>
