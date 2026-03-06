@@ -1,7 +1,7 @@
 export type Locale = "en" | "fr" | "mg"
 
 type TranslationShape = {
-  nav: { dashboard: string; tasks: string; finance: string; health: string; notifications: string; settings: string }
+  nav: { dashboard: string; tasks: string; finance: string; health: string; notifications: string; ai: string; settings: string }
   sections: { MAIN: string; SYSTEM: string }
   header: { profile: string; settings: string; logout: string; notifications: string }
   pages: Record<string, string>
@@ -11,7 +11,7 @@ type TranslationShape = {
 
 export const translations: Record<Locale, TranslationShape> = {
   en: {
-    nav: { dashboard: "Dashboard", tasks: "Tasks", finance: "Finance", health: "Health", notifications: "Notifications", settings: "Settings" },
+    nav: { dashboard: "Dashboard", tasks: "Tasks", finance: "Finance", health: "Health", notifications: "Notifications", ai: "AI", settings: "Settings" },
     sections: { MAIN: "Main", SYSTEM: "System" },
     header: { profile: "Profile", settings: "Settings", logout: "Logout", notifications: "Notifications" },
     pages: {
@@ -20,13 +20,14 @@ export const translations: Record<Locale, TranslationShape> = {
       "/protected/finance": "Finance",
       "/protected/health": "Health",
       "/protected/notifications": "Notifications",
+      "/protected/ai": "AI & Predictions",
       "/protected/settings": "Settings",
     },
     languages: { en: "English", fr: "Français", mg: "Malagasy" },
     theme: { light: "Light mode", dark: "Dark mode" },
   },
   fr: {
-    nav: { dashboard: "Tableau de bord", tasks: "Tâches", finance: "Finance", health: "Santé", notifications: "Notifications", settings: "Paramètres" },
+    nav: { dashboard: "Tableau de bord", tasks: "Tâches", finance: "Finance", health: "Santé", notifications: "Notifications", ai: "IA", settings: "Paramètres" },
     sections: { MAIN: "Principal", SYSTEM: "Système" },
     header: { profile: "Profil", settings: "Paramètres", logout: "Déconnexion", notifications: "Notifications" },
     pages: {
@@ -35,13 +36,14 @@ export const translations: Record<Locale, TranslationShape> = {
       "/protected/finance": "Finance",
       "/protected/health": "Santé",
       "/protected/notifications": "Notifications",
+      "/protected/ai": "IA & Prédictions",
       "/protected/settings": "Paramètres",
     },
     languages: { en: "Anglais", fr: "Français", mg: "Malgache" },
     theme: { light: "Mode clair", dark: "Mode sombre" },
   },
   mg: {
-    nav: { dashboard: "Fandraisana", tasks: "Asa", finance: "Vola", health: "Fahasalamana", notifications: "Fampandrenesana", settings: "Fikirana" },
+    nav: { dashboard: "Fandraisana", tasks: "Asa", finance: "Vola", health: "Fahasalamana", notifications: "Fampandrenesana", ai: "IA", settings: "Fikirana" },
     sections: { MAIN: "Lehibe", SYSTEM: "Rafitra" },
     header: { profile: "Mombamomba", settings: "Fikirana", logout: "Hivoaka", notifications: "Fampandrenesana" },
     pages: {
@@ -50,6 +52,7 @@ export const translations: Record<Locale, TranslationShape> = {
       "/protected/finance": "Vola",
       "/protected/health": "Fahasalamana",
       "/protected/notifications": "Fampandrenesana",
+      "/protected/ai": "IA & Fitsapana",
       "/protected/settings": "Fikirana",
     },
     languages: { en: "Anglisy", fr: "Frantsay", mg: "Malagasy" },

@@ -5,6 +5,7 @@ import {
   Heart,
   Bell,
   Settings,
+  Sparkles,
 } from "lucide-react"
 
 export const navigation = [
@@ -35,6 +36,11 @@ export const navigation = [
         label: "Notifications",
         href: "/protected/notifications",
         icon: Bell,
+      },
+      {
+        label: "AI",
+        href: "/protected/ai",
+        icon: Sparkles,
       },
     ],
   },
