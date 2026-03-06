@@ -43,7 +43,7 @@ export const navigation = [
     items: [
       {
         label: "Settings",
-        href: "/settings",
+        href: "/protected/settings",
         icon: Settings,
       },
     ],
