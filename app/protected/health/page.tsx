@@ -2,11 +2,14 @@
 
 import { Heart, Smile, Droplets, Moon, Dumbbell } from "lucide-react"
 import { useHealth } from "@/features/health/hooks/use-health"
+import { useAppToast } from "@/hooks/use-app-toast"
+import { AppToast } from "@/components/ui/app-toast"
 import { MoodTracker } from "@/features/health/_components/mood-tracker"
 import { WaterTracker } from "@/features/health/_components/water-tracker"
 import { SleepTracker } from "@/features/health/_components/sleep-tracker"
 import { ExerciseTracker } from "@/features/health/_components/exercise-tracker"
 import { JournalTracker } from "@/features/health/_components/journal-tracker"
+import { ManualTracker } from "@/features/health/_components/manual-tracker"
 import { MOOD_CONFIG, WATER_GOAL } from "@/features/health/types"
 
 export default function HealthPage() {
@@ -21,10 +24,58 @@ export default function HealthPage() {
     todayStr,
   } = useHealth()
 
+  const { toasts, addToast, dismiss } = useAppToast()
+
   const cardClass = "bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 shadow-sm"
 
   const todayMood = moods.find(m => m.date === todayStr)
   const todaySleep = sleep.find(s => s.date === todayStr)
+
+  // ── Wrapped CRUD with toasts ──
+  const handleAddMood: typeof addMood = (...args) => {
+    try { addMood(...args); addToast("success", "Humeur enregistrée") }
+    catch { addToast("error", "Erreur lors de l'enregistrement") }
+  }
+  const handleDeleteMood = (id: string) => {
+    try { deleteMood(id); addToast("success", "Humeur supprimée") }
+    catch { addToast("error", "Erreur lors de la suppression") }
+  }
+
+  const handleAddSleep: typeof addSleep = (data) => {
+    try { addSleep(data); addToast("success", `Sommeil enregistré : ${data.hours}h`) }
+    catch { addToast("error", "Erreur lors de l'enregistrement") }
+  }
+  const handleDeleteSleep = (id: string) => {
+    try { deleteSleep(id); addToast("success", "Entrée sommeil supprimée") }
+    catch { addToast("error", "Erreur lors de la suppression") }
+  }
+
+  const handleAddExercise: typeof addExercise = (data) => {
+    try { addExercise(data); addToast("success", `Activité enregistrée : ${data.duration} min`) }
+    catch { addToast("error", "Erreur lors de l'enregistrement") }
+  }
+  const handleDeleteExercise = (id: string) => {
+    try { deleteExercise(id); addToast("success", "Activité supprimée") }
+    catch { addToast("error", "Erreur lors de la suppression") }
+  }
+
+  const handleSetWater = (n: number) => {
+    try { setWaterGlasses(n); addToast("success", `Hydratation mise à jour : ${n} verre${n > 1 ? "s" : ""}`) }
+    catch { addToast("error", "Erreur lors de la mise à jour") }
+  }
+
+  const handleAddJournal: typeof addJournalEntry = (data) => {
+    try { addJournalEntry(data); addToast("success", "Entrée de journal ajoutée") }
+    catch { addToast("error", "Erreur lors de l'ajout") }
+  }
+  const handleUpdateJournal: typeof updateJournalEntry = (id, data) => {
+    try { updateJournalEntry(id, data); addToast("success", "Journal mis à jour") }
+    catch { addToast("error", "Erreur lors de la modification") }
+  }
+  const handleDeleteJournal = (id: string) => {
+    try { deleteJournalEntry(id); addToast("success", "Entrée de journal supprimée") }
+    catch { addToast("error", "Erreur lors de la suppression") }
+  }
 
   const kpis = [
     {
@@ -59,6 +110,7 @@ export default function HealthPage() {
 
   return (
     <div className="max-w-6xl mx-auto space-y-6">
+      <AppToast toasts={toasts} onDismiss={dismiss} />
 
       {/* Header */}
       <div className="flex items-center gap-3">
@@ -87,28 +139,38 @@ export default function HealthPage() {
         ))}
       </div>
 
-      {/* Main grid */}
+      {/* Manual quick tracker */}
+      <ManualTracker
+        todayWater={todayWater}
+        todayStr={todayStr}
+        onSetWater={handleSetWater}
+        onAddSleep={handleAddSleep}
+        onAddExercise={handleAddExercise}
+        onSuccess={(msg) => addToast("success", msg)}
+      />
+
+      {/* Detailed trackers */}
       <div className="grid grid-cols-2 gap-6">
         <MoodTracker
           moods={moods}
-          onAdd={addMood}
-          onDelete={deleteMood}
+          onAdd={handleAddMood}
+          onDelete={handleDeleteMood}
           todayStr={todayStr}
         />
         <WaterTracker
           glasses={todayWater}
-          onSet={setWaterGlasses}
+          onSet={handleSetWater}
         />
         <SleepTracker
           entries={sleep}
-          onAdd={addSleep}
-          onDelete={deleteSleep}
+          onAdd={handleAddSleep}
+          onDelete={handleDeleteSleep}
           todayStr={todayStr}
         />
         <ExerciseTracker
           entries={exercise}
-          onAdd={addExercise}
-          onDelete={deleteExercise}
+          onAdd={handleAddExercise}
+          onDelete={handleDeleteExercise}
           todayStr={todayStr}
           totalMinutesThisWeek={totalExerciseThisWeek}
         />
@@ -117,9 +179,9 @@ export default function HealthPage() {
       {/* Journal — full width */}
       <JournalTracker
         entries={journal}
-        onAdd={addJournalEntry}
-        onUpdate={updateJournalEntry}
-        onDelete={deleteJournalEntry}
+        onAdd={handleAddJournal}
+        onUpdate={handleUpdateJournal}
+        onDelete={handleDeleteJournal}
         todayStr={todayStr}
       />
     </div>
