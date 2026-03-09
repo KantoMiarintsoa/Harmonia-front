@@ -83,7 +83,9 @@ function Login() {
             </button>
           </div>
 
-          <div className="text-right text-xs text-purple-600 dark:text-purple-400 cursor-pointer">{l.forgotPassword}</div>
+          <div className="text-right">
+            <Link href="/unauthenticated/forgot-password" className="text-xs text-purple-600 dark:text-purple-400 hover:underline">{l.forgotPassword}</Link>
+          </div>
 
           <button type="submit" disabled={loading}
             className="w-full h-11 bg-purple-600 hover:bg-purple-700 disabled:opacity-60 text-white flex items-center justify-center rounded-md text-sm font-medium transition-colors">

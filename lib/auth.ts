@@ -86,3 +86,59 @@ export function consumePrefill(): { email: string; password: string } | null {
     return null
   }
 }
+
+/* ── Password reset flow ── */
+
+const RESET_KEY = "harmonia_reset_code"
+
+interface ResetData {
+  email: string
+  code: string
+  expiresAt: number
+}
+
+/** Generate a 6-digit code, store it with 10-min expiry, return the code */
+export function generateResetCode(email: string): string {
+  const code = String(Math.floor(100000 + Math.random() * 900000))
+  const data: ResetData = { email, code, expiresAt: Date.now() + 10 * 60 * 1000 }
+  localStorage.setItem(RESET_KEY, JSON.stringify(data))
+  return code
+}
+
+/** Verify the code matches and is not expired */
+export function verifyResetCode(email: string, code: string): boolean {
+  try {
+    const raw = localStorage.getItem(RESET_KEY)
+    if (!raw) return false
+    const data: ResetData = JSON.parse(raw)
+    return data.email.toLowerCase() === email.toLowerCase()
+      && data.code === code
+      && Date.now() < data.expiresAt
+  } catch {
+    return false
+  }
+}
+
+/** Update the user's password and clear the reset code */
+export function resetPassword(email: string, newPassword: string): boolean {
+  const users = getUsers()
+  const idx = users.findIndex(u => u.email.toLowerCase() === email.toLowerCase())
+  if (idx === -1) return false
+  users[idx].password = newPassword
+  saveUsers(users)
+  localStorage.removeItem(RESET_KEY)
+  return true
+}
+
+/** Store email for the reset flow navigation */
+export function saveResetEmail(email: string): void {
+  localStorage.setItem("harmonia_reset_email", email)
+}
+
+export function getResetEmail(): string | null {
+  return localStorage.getItem("harmonia_reset_email")
+}
+
+export function clearResetEmail(): void {
+  localStorage.removeItem("harmonia_reset_email")
+}

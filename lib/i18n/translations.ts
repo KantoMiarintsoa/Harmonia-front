@@ -21,6 +21,25 @@ type TranslationShape = {
       googleRegister: string; errFill: string; errShortPwd: string
       errMismatch: string; errExists: string
     }
+    forgotPassword: {
+      title: string; subtitle: string; emailPlaceholder: string
+      submit: string; submitting: string; backToLogin: string
+      errFill: string; errNoAccount: string
+      codeSentTitle: string; codeSentMsg: (code: string) => string
+    }
+    verifyCode: {
+      title: string; subtitle: (email: string) => string
+      codePlaceholder: string; submit: string; submitting: string
+      resend: string; backToLogin: string
+      errFill: string; errInvalid: string; resent: string
+    }
+    resetPassword: {
+      title: string; subtitle: string
+      newPassword: string; confirmPassword: string
+      submit: string; submitting: string
+      errFill: string; errShortPwd: string; errMismatch: string
+      success: string
+    }
   }
   common: {
     save: string; cancel: string; delete: string; edit: string; add: string
@@ -65,6 +84,27 @@ export const translations: Record<Locale, TranslationShape> = {
         errShortPwd: "Password must be at least 6 characters.",
         errMismatch: "Passwords do not match.",
         errExists: "An account with this email already exists. Please sign in.",
+      },
+      forgotPassword: {
+        title: "Forgot Password", subtitle: "Enter your email to receive a verification code",
+        emailPlaceholder: "your@email.com", submit: "Send Code", submitting: "Sending...",
+        backToLogin: "Back to login",
+        errFill: "Please enter your email.", errNoAccount: "No account found with this email.",
+        codeSentTitle: "Code Sent!", codeSentMsg: (code) => `Your verification code is: ${code}`,
+      },
+      verifyCode: {
+        title: "Verify Code", subtitle: (email) => `Enter the 6-digit code sent to ${email}`,
+        codePlaceholder: "000000", submit: "Verify", submitting: "Verifying...",
+        resend: "Resend code", backToLogin: "Back to login",
+        errFill: "Please enter the verification code.", errInvalid: "Invalid or expired code.",
+        resent: "A new code has been sent.",
+      },
+      resetPassword: {
+        title: "Reset Password", subtitle: "Enter your new password",
+        newPassword: "New password", confirmPassword: "Confirm password",
+        submit: "Reset Password", submitting: "Resetting...",
+        errFill: "Please fill in all fields.", errShortPwd: "Password must be at least 6 characters.",
+        errMismatch: "Passwords do not match.", success: "Password reset successfully!",
       },
     },
     common: {
@@ -111,6 +151,27 @@ export const translations: Record<Locale, TranslationShape> = {
         errMismatch: "Les mots de passe ne correspondent pas.",
         errExists: "Un compte avec cet e-mail existe déjà. Veuillez vous connecter.",
       },
+      forgotPassword: {
+        title: "Mot de passe oublié", subtitle: "Entrez votre e-mail pour recevoir un code de vérification",
+        emailPlaceholder: "votre@email.com", submit: "Envoyer le code", submitting: "Envoi...",
+        backToLogin: "Retour à la connexion",
+        errFill: "Veuillez entrer votre e-mail.", errNoAccount: "Aucun compte trouvé avec cet e-mail.",
+        codeSentTitle: "Code envoyé !", codeSentMsg: (code) => `Votre code de vérification est : ${code}`,
+      },
+      verifyCode: {
+        title: "Vérifier le code", subtitle: (email) => `Entrez le code à 6 chiffres envoyé à ${email}`,
+        codePlaceholder: "000000", submit: "Vérifier", submitting: "Vérification...",
+        resend: "Renvoyer le code", backToLogin: "Retour à la connexion",
+        errFill: "Veuillez entrer le code de vérification.", errInvalid: "Code invalide ou expiré.",
+        resent: "Un nouveau code a été envoyé.",
+      },
+      resetPassword: {
+        title: "Réinitialiser le mot de passe", subtitle: "Entrez votre nouveau mot de passe",
+        newPassword: "Nouveau mot de passe", confirmPassword: "Confirmer le mot de passe",
+        submit: "Réinitialiser", submitting: "Réinitialisation...",
+        errFill: "Veuillez remplir tous les champs.", errShortPwd: "Le mot de passe doit contenir au moins 6 caractères.",
+        errMismatch: "Les mots de passe ne correspondent pas.", success: "Mot de passe réinitialisé avec succès !",
+      },
     },
     common: {
       save: "Enregistrer", cancel: "Annuler", delete: "Supprimer", edit: "Modifier", add: "Ajouter",
@@ -155,6 +216,27 @@ export const translations: Record<Locale, TranslationShape> = {
         errShortPwd: "Teny miafina 6 tarehintsoratra farafahakeliny.",
         errMismatch: "Tsy mifanaraka ny teny miafina.",
         errExists: "Misy kaonty sahady amin'ity mailaka ity. Miditra azafady.",
+      },
+      forgotPassword: {
+        title: "Hadiniko ny teny miafina", subtitle: "Ampidiro ny mailaka mba hahazoana code fanamarinana",
+        emailPlaceholder: "ny@mailaka.com", submit: "Handefa code", submitting: "Mandefa...",
+        backToLogin: "Hiverina amin'ny fidirana",
+        errFill: "Ampidiro ny mailaka.", errNoAccount: "Tsy misy kaonty hita amin'ity mailaka ity.",
+        codeSentTitle: "Code voahandefa!", codeSentMsg: (code) => `Ny code fanamarinana dia: ${code}`,
+      },
+      verifyCode: {
+        title: "Hamarino ny code", subtitle: (email) => `Ampidiro ny code 6 isa nalefa tany amin'ny ${email}`,
+        codePlaceholder: "000000", submit: "Hamarino", submitting: "Famarinana...",
+        resend: "Handefa code vaovao", backToLogin: "Hiverina amin'ny fidirana",
+        errFill: "Ampidiro ny code fanamarinana.", errInvalid: "Code diso na efa lany daty.",
+        resent: "Code vaovao voahandefa.",
+      },
+      resetPassword: {
+        title: "Hanova teny miafina", subtitle: "Ampidiro ny teny miafina vaovao",
+        newPassword: "Teny miafina vaovao", confirmPassword: "Avereno ny teny miafina",
+        submit: "Hanova", submitting: "Fanovana...",
+        errFill: "Fenoy ny saha rehetra.", errShortPwd: "Teny miafina 6 tarehintsoratra farafahakeliny.",
+        errMismatch: "Tsy mifanaraka ny teny miafina.", success: "Teny miafina voaova soa aman-tsara!",
       },
     },
     common: {
