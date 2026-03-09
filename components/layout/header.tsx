@@ -102,12 +102,17 @@ export function Header() {
 
   const [profile, setProfile] = useState({ name: "Utilisateur", initials: "U" })
   useEffect(() => {
+    const session = localStorage.getItem("harmonia_session")
     const stored = localStorage.getItem("harmonia_profile")
-    if (stored) {
-      const p = JSON.parse(stored)
-      setProfile({ name: p.name || "Utilisateur", initials: p.initials || p.name?.slice(0, 2).toUpperCase() || "U" })
-    }
-  }, [pathname]) // re-read on route change so profile updates are reflected
+    const s = session ? JSON.parse(session) : null
+    const p = stored ? JSON.parse(stored) : null
+    const name = p?.name || s?.name || "Utilisateur"
+    // Initials from the part before @ in email
+    const email: string = s?.email || ""
+    const localPart = email.split("@")[0] || ""
+    const initials = localPart ? localPart.slice(0, 2).toUpperCase() : name.slice(0, 2).toUpperCase()
+    setProfile({ name, initials })
+  }, [pathname])
 
   // Close on outside click
   useEffect(() => {
