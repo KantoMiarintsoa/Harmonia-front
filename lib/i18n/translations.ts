@@ -24,14 +24,14 @@ type TranslationShape = {
     forgotPassword: {
       title: string; subtitle: string; emailPlaceholder: string
       submit: string; submitting: string; backToLogin: string
-      errFill: string; errNoAccount: string
-      codeSentTitle: string; codeSentMsg: (code: string) => string
+      errFill: string; errNoAccount: string; errSendFailed: string
+      codeSentTitle: string; codeSentDesc: string
     }
     verifyCode: {
       title: string; subtitle: (email: string) => string
       codePlaceholder: string; submit: string; submitting: string
-      resend: string; backToLogin: string
-      errFill: string; errInvalid: string; resent: string
+      resend: string; resending: string; backToLogin: string
+      errFill: string; errInvalid: string; resent: string; resentFailed: string
     }
     resetPassword: {
       title: string; subtitle: string
@@ -90,14 +90,15 @@ export const translations: Record<Locale, TranslationShape> = {
         emailPlaceholder: "your@email.com", submit: "Send Code", submitting: "Sending...",
         backToLogin: "Back to login",
         errFill: "Please enter your email.", errNoAccount: "No account found with this email.",
-        codeSentTitle: "Code Sent!", codeSentMsg: (code) => `Your verification code is: ${code}`,
+        errSendFailed: "Failed to send email. Please try again.",
+        codeSentTitle: "Code Sent!", codeSentDesc: "A verification code has been sent to your email.",
       },
       verifyCode: {
         title: "Verify Code", subtitle: (email) => `Enter the 6-digit code sent to ${email}`,
         codePlaceholder: "000000", submit: "Verify", submitting: "Verifying...",
-        resend: "Resend code", backToLogin: "Back to login",
+        resend: "Resend code", resending: "Sending...", backToLogin: "Back to login",
         errFill: "Please enter the verification code.", errInvalid: "Invalid or expired code.",
-        resent: "A new code has been sent.",
+        resent: "A new code has been sent to your email.", resentFailed: "Failed to resend code.",
       },
       resetPassword: {
         title: "Reset Password", subtitle: "Enter your new password",
@@ -156,14 +157,15 @@ export const translations: Record<Locale, TranslationShape> = {
         emailPlaceholder: "votre@email.com", submit: "Envoyer le code", submitting: "Envoi...",
         backToLogin: "Retour à la connexion",
         errFill: "Veuillez entrer votre e-mail.", errNoAccount: "Aucun compte trouvé avec cet e-mail.",
-        codeSentTitle: "Code envoyé !", codeSentMsg: (code) => `Votre code de vérification est : ${code}`,
+        errSendFailed: "Echec de l'envoi de l'e-mail. Veuillez réessayer.",
+        codeSentTitle: "Code envoyé !", codeSentDesc: "Un code de vérification a été envoyé à votre e-mail.",
       },
       verifyCode: {
         title: "Vérifier le code", subtitle: (email) => `Entrez le code à 6 chiffres envoyé à ${email}`,
         codePlaceholder: "000000", submit: "Vérifier", submitting: "Vérification...",
-        resend: "Renvoyer le code", backToLogin: "Retour à la connexion",
+        resend: "Renvoyer le code", resending: "Envoi...", backToLogin: "Retour à la connexion",
         errFill: "Veuillez entrer le code de vérification.", errInvalid: "Code invalide ou expiré.",
-        resent: "Un nouveau code a été envoyé.",
+        resent: "Un nouveau code a été envoyé à votre e-mail.", resentFailed: "Echec du renvoi du code.",
       },
       resetPassword: {
         title: "Réinitialiser le mot de passe", subtitle: "Entrez votre nouveau mot de passe",
@@ -222,14 +224,15 @@ export const translations: Record<Locale, TranslationShape> = {
         emailPlaceholder: "ny@mailaka.com", submit: "Handefa code", submitting: "Mandefa...",
         backToLogin: "Hiverina amin'ny fidirana",
         errFill: "Ampidiro ny mailaka.", errNoAccount: "Tsy misy kaonty hita amin'ity mailaka ity.",
-        codeSentTitle: "Code voahandefa!", codeSentMsg: (code) => `Ny code fanamarinana dia: ${code}`,
+        errSendFailed: "Tsy nahomby ny fandefasana mailaka. Andramo indray.",
+        codeSentTitle: "Code voahandefa!", codeSentDesc: "Code fanamarinana voahandefa tany amin'ny mailaka.",
       },
       verifyCode: {
         title: "Hamarino ny code", subtitle: (email) => `Ampidiro ny code 6 isa nalefa tany amin'ny ${email}`,
         codePlaceholder: "000000", submit: "Hamarino", submitting: "Famarinana...",
-        resend: "Handefa code vaovao", backToLogin: "Hiverina amin'ny fidirana",
+        resend: "Handefa code vaovao", resending: "Mandefa...", backToLogin: "Hiverina amin'ny fidirana",
         errFill: "Ampidiro ny code fanamarinana.", errInvalid: "Code diso na efa lany daty.",
-        resent: "Code vaovao voahandefa.",
+        resent: "Code vaovao voahandefa tany amin'ny mailaka.", resentFailed: "Tsy nahomby ny fandefasana code.",
       },
       resetPassword: {
         title: "Hanova teny miafina", subtitle: "Ampidiro ny teny miafina vaovao",

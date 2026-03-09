@@ -2,10 +2,11 @@
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
-import { Mail, ArrowLeft, AlertCircle, ShieldCheck } from "lucide-react"
+import { Mail, ArrowLeft, AlertCircle, CheckCircle2 } from "lucide-react"
 import { Card } from "@/components/ui/card"
 import Link from "next/link"
 import { findUserByEmail, generateResetCode, saveResetEmail } from "@/lib/auth"
+import { sendResetCodeEmail } from "@/lib/email"
 import { useI18n } from "@/contexts/i18n-context"
 
 const inputClass = "w-full h-11 rounded-md border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 text-sm text-gray-900 dark:text-gray-100 placeholder:text-gray-400 dark:placeholder:text-gray-500 shadow-sm outline-none focus:ring-2 focus:ring-purple-400 focus:border-transparent transition"
@@ -18,9 +19,9 @@ export default function ForgotPassword() {
   const [email, setEmail] = useState("")
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
-  const [codeSent, setCodeSent] = useState<string | null>(null)
+  const [sent, setSent] = useState(false)
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError(null)
     if (!email) { setError(l.errFill); return }
@@ -31,7 +32,11 @@ export default function ForgotPassword() {
 
     const code = generateResetCode(email)
     saveResetEmail(email)
-    setCodeSent(code)
+
+    const emailSent = await sendResetCodeEmail(email, code)
+    if (!emailSent) { setError(l.errSendFailed); setLoading(false); return }
+
+    setSent(true)
     setLoading(false)
   }
 
@@ -47,7 +52,7 @@ export default function ForgotPassword() {
           <h2 className="text-purple-600 dark:text-purple-400 font-semibold tracking-wide">{t.auth.brand}</h2>
         </div>
 
-        {!codeSent ? (
+        {!sent ? (
           <>
             <div className="flex justify-center mb-4">
               <div className="h-14 w-14 rounded-2xl bg-purple-50 dark:bg-purple-950 flex items-center justify-center">
@@ -84,19 +89,14 @@ export default function ForgotPassword() {
           <>
             <div className="flex justify-center mb-4">
               <div className="h-14 w-14 rounded-2xl bg-green-50 dark:bg-green-950 flex items-center justify-center">
-                <ShieldCheck className="h-7 w-7 text-green-600 dark:text-green-400" />
+                <CheckCircle2 className="h-7 w-7 text-green-600 dark:text-green-400" />
               </div>
             </div>
 
             <div className="mb-6 text-center">
               <h1 className="text-xl font-bold text-gray-800 dark:text-gray-100">{l.codeSentTitle}</h1>
-              <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">{l.codeSentMsg(codeSent)}</p>
-              <div className="mt-4 p-4 bg-purple-50 dark:bg-purple-950 rounded-xl border border-purple-200 dark:border-purple-800">
-                <p className="text-3xl font-mono font-bold text-purple-600 dark:text-purple-400 tracking-[0.3em]">{codeSent}</p>
-              </div>
-              <p className="text-[11px] text-gray-400 dark:text-gray-500 mt-3">
-                {t.auth.brand} — Simulation (no real email)
-              </p>
+              <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">{l.codeSentDesc}</p>
+              <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">{email}</p>
             </div>
 
             <button onClick={goToVerify}

@@ -6,6 +6,7 @@ import { KeyRound, ArrowLeft, AlertCircle } from "lucide-react"
 import { Card } from "@/components/ui/card"
 import Link from "next/link"
 import { getResetEmail, verifyResetCode, generateResetCode } from "@/lib/auth"
+import { sendResetCodeEmail } from "@/lib/email"
 import { useI18n } from "@/contexts/i18n-context"
 
 export default function VerifyCode() {
@@ -16,6 +17,7 @@ export default function VerifyCode() {
   const [digits, setDigits] = useState<string[]>(["", "", "", "", "", ""])
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
+  const [resending, setResending] = useState(false)
   const [info, setInfo] = useState<string | null>(null)
   const inputRefs = useRef<(HTMLInputElement | null)[]>([])
 
@@ -65,12 +67,20 @@ export default function VerifyCode() {
     router.push("/unauthenticated/reset-password")
   }
 
-  const handleResend = () => {
-    if (!email) return
+  const handleResend = async () => {
+    if (!email || resending) return
+    setResending(true)
+    setError(null)
     const code = generateResetCode(email)
+    const sent = await sendResetCodeEmail(email, code)
+    setResending(false)
     setDigits(["", "", "", "", "", ""])
-    setInfo(`${l.resent} (${code})`)
-    setTimeout(() => setInfo(null), 5000)
+    if (sent) {
+      setInfo(l.resent)
+      setTimeout(() => setInfo(null), 5000)
+    } else {
+      setError(l.resentFailed)
+    }
   }
 
   if (!email) return null
@@ -131,9 +141,9 @@ export default function VerifyCode() {
           </button>
 
           <div className="text-center">
-            <button type="button" onClick={handleResend}
-              className="text-xs text-purple-600 dark:text-purple-400 hover:underline">
-              {l.resend}
+            <button type="button" onClick={handleResend} disabled={resending}
+              className="text-xs text-purple-600 dark:text-purple-400 hover:underline disabled:opacity-50">
+              {resending ? l.resending : l.resend}
             </button>
           </div>
         </form>
